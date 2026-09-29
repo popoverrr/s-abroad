@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "S ABROAD — studium a prázdniny v zahraničí",
+    "description": "Přijetí na špičkové světové univerzity, studium v Česku i jinde, jazykové kurzy, prázdniny v zahraničí a vízová podpora. Konzultace zdarma přes WhatsApp."
+  },
+  "brand": { "tagline": "Studium a prázdniny v zahraničí" },
+  "sound": { "on": "Zvuk zap.", "off": "Zvuk vyp." },
+  "lang": { "label": "Jazyk" },
+  "hero": {
+    "eyebrow": "Vzdělávací agentura",
+    "title_lines": ["Svět je", "tvůj", "kampus."],
+    "subtitle": ["Přijetí na top univerzity", "Jazykové kurzy", "Prázdniny", "Víza"]
+  },
+  "board": { "from": "Odkud", "to": "Kam", "time": "Čas", "status": "Nástup zahájen", "sr": "Destinace: Praha, Brno, Vídeň, Berlín, Milán, Varšava, Budapešť, Londýn a další" },
+  "pass": {
+    "title": "Palubní vstupenka",
+    "from_city": "Almaty",
+    "to_city": "Evropa a svět",
+    "passenger": "Cestující", "passenger_value": "Vy",
+    "class": "Třída", "class_value": "Student",
+    "boarding": "Nástup", "boarding_value": "Teď",
+    "gates": "Východy"
+  },
+  "badge": { "free": "zdarma" },
+  "links": {
+    "consult": "Konzultace zdarma",
+    "instagram": "Instagram",
+    "call": "Zavolat",
+    "telegram": "Telegram",
+    "branch_ukr": "Pobočka na Ukrajině",
+    "branch_west": "S Abroad West"
+  },
+  "services": [
+    { "title": "Přijetí", "ring": "TOP UNIVERZITY SVĚTA •", "text": "Pomůžeme vybrat univerzitu a dostat se na ni — v Česku i jinde.", "wa": "Dobrý den! Chci se informovat o přijetí na univerzitu v zahraničí." },
+    { "title": "Jazyky", "ring": "JAZYKOVÉ KURZY •", "text": "Jazykové kurzy v zahraničí — přímo v zemi jazyka.", "wa": "Dobrý den! Mám zájem o jazykové kurzy v zahraničí." },
+    { "title": "Prázdniny", "ring": "PRÁZDNINY V ZAHRANIČÍ •", "text": "Prázdniny v zahraničí: studium, noví přátelé a zážitky.", "wa": "Dobrý den! Chci se informovat o prázdninách v zahraničí." },
+    { "title": "Víza", "ring": "VÍZOVÁ PODPORA •", "text": "Podpora s dokumenty a vízem.", "wa": "Dobrý den! Potřebuji pomoc s vízem." }
+  ],
+  "stub": {
+    "scan": "Naskenuj a otevři v telefonu",
+    "save_contact": "Uložit kontakt",
+    "share": "Sdílet",
+    "show_qr": "Ukázat QR kamarádovi",
+    "close": "Zavřít",
+    "copied": "Odkaz zkopírován"
+  },
+  "cta": { "primary": "Konzultace zdarma" },
+  "wa": { "default": "Dobrý den! Mám zájem o konzultaci zdarma ke studiu v zahraničí." },
+  "footer": { "left": "Study & travel abroad", "ukraine": "Jsme i na Ukrajině" },
+  "intro": { "skip": "Přeskočit" }
+}

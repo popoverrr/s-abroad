@@ -1,0 +1,38 @@
+{
+  "_readme": "Единый источник контактов. \"\" = скрыть. Строка, начинающаяся с TODO = заполнить перед публикацией (npm run check:todo покажет список). Телефоны — только цифры с кодом страны, без +.",
+
+  "brand": "S ABROAD",
+  "domain": "TODO: домен сайта, например s-abroad.kz (нужен для QR, OG и vCard)",
+  "year": 2026,
+
+  "contacts": {
+    "whatsapp": "TODO: номер WhatsApp, например 77010000000",
+    "phone": "TODO: номер для звонков, например 77010000000 (можно тот же)",
+    "telegram": "",
+    "email": "",
+    "instagram": "s__abroad"
+  },
+
+  "links": [
+    { "id": "consult",   "type": "whatsapp",  "labelKey": "links.consult",   "primary": true,  "enabled": true },
+    { "id": "instagram", "type": "instagram", "handle": "s__abroad",           "labelKey": "links.instagram", "enabled": true },
+    { "id": "call",      "type": "phone",     "labelKey": "links.call",       "enabled": true },
+    { "id": "telegram",  "type": "telegram",  "labelKey": "links.telegram",   "enabled": true },
+    { "id": "ukraine",   "type": "instagram", "handle": "s_abroad_ukr",        "labelKey": "links.branch_ukr", "enabled": true },
+    { "id": "west",      "type": "instagram", "handle": "s_abroad_west",       "labelKey": "links.branch_west", "enabled": false,
+      "_note": "Похоже на связанный аккаунт (та же подпись «Обучение | Каникулы за рубежом»), но в био s__abroad не указан. Включить только после подтверждения клиентом." }
+  ],
+
+  "origin": { "code": "ALA", "city": "ALMATY", "lat": 43.2389, "lng": 76.8897 },
+
+  "destinations": [
+    { "code": "PRG", "city": "PRAHA",    "lat": 50.0755, "lng": 14.4378 },
+    { "code": "BRQ", "city": "BRNO",     "lat": 49.1951, "lng": 16.6068 },
+    { "code": "VIE", "city": "WIEN",     "lat": 48.2082, "lng": 16.3738 },
+    { "code": "BER", "city": "BERLIN",   "lat": 52.5200, "lng": 13.4050 },
+    { "code": "MXP", "city": "MILANO",   "lat": 45.4642, "lng": 9.1900 },
+    { "code": "WAW", "city": "WARSZAWA", "lat": 52.2297, "lng": 21.0122 },
+    { "code": "BUD", "city": "BUDAPEST", "lat": 47.4979, "lng": 19.0402 },
+    { "code": "LHR", "city": "LONDON",   "lat": 51.5072, "lng": -0.1276 }
+  ]
+}
