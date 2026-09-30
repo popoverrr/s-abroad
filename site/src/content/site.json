@@ -1,27 +1,32 @@
 {
-  "_readme": "Единый источник контактов. \"\" = скрыть. Строка, начинающаяся с TODO = заполнить перед публикацией (npm run check:todo покажет список). Телефоны — только цифры с кодом страны, без +.",
+  "_readme": "v2. Единый источник контактов. \"\" = скрыть. Строка TODO… = заполнить перед публикацией (npm run check:todo). Телефоны — только цифры с кодом страны, без +.",
 
   "brand": "S ABROAD",
-  "domain": "TODO: домен сайта, например s-abroad.kz (нужен для QR, OG и vCard)",
+  "domain": "https://popoverrr.github.io/s-abroad/",
+  "_domain_note": "Сейчас сайт на GitHub Pages. При переезде на свой домен — поменять здесь, QR/OG/vCard пересоберутся.",
   "year": 2026,
 
-  "contacts": {
-    "whatsapp": "TODO: номер WhatsApp, например 77010000000",
-    "phone": "TODO: номер для звонков, например 77010000000 (можно тот же)",
-    "telegram": "",
-    "email": "",
-    "instagram": "s__abroad"
+  "colors": {
+    "brand": "#195231",
+    "_note": "Цвет снят с логотипа клиента (assets/brand/logo-green-square.png)"
   },
 
-  "links": [
-    { "id": "consult",   "type": "whatsapp",  "labelKey": "links.consult",   "primary": true,  "enabled": true },
-    { "id": "instagram", "type": "instagram", "handle": "s__abroad",           "labelKey": "links.instagram", "enabled": true },
-    { "id": "call",      "type": "phone",     "labelKey": "links.call",       "enabled": true },
-    { "id": "telegram",  "type": "telegram",  "labelKey": "links.telegram",   "enabled": true },
-    { "id": "ukraine",   "type": "instagram", "handle": "s_abroad_ukr",        "labelKey": "links.branch_ukr", "enabled": true },
-    { "id": "west",      "type": "instagram", "handle": "s_abroad_west",       "labelKey": "links.branch_west", "enabled": false,
-      "_note": "Похоже на связанный аккаунт (та же подпись «Обучение | Каникулы за рубежом»), но в био s__abroad не указан. Включить только после подтверждения клиентом." }
+  "managers": [
+    { "id": "ramil",   "nameKey": "managers.ramil",   "phone": "77075858747", "whatsapp": "77075858747", "initial": "R" },
+    { "id": "gainel",  "nameKey": "managers.gainel",  "phone": "77018009045", "whatsapp": "77018009045", "initial": "G" }
   ],
+
+  "socials": [
+    { "id": "instagram", "label": "Instagram", "url": "https://www.instagram.com/s__abroad/", "handle": "@s__abroad" },
+    { "id": "tiktok",    "label": "TikTok",    "url": "https://www.tiktok.com/@s__abroad",   "handle": "@s__abroad" },
+    { "id": "threads",   "label": "Threads",   "url": "https://www.threads.com/@s__abroad",  "handle": "@s__abroad" }
+  ],
+
+  "whatsapp_company": {
+    "url": "https://wa.me/message/66XGYYSTENZYH1",
+    "enabled": false,
+    "_note": "Бизнес-ссылка WhatsApp «Образование за рубежом». По ТЗ кнопка WhatsApp даёт выбор из двух менеджеров, поэтому эта ссылка в интерфейсе не показывается. Не удалять — может понадобиться. Ссылку https://wa.me/qr/QIKY7ZK5N2OUN1 (личный QR-контакт) не используем: неизвестно, чей это номер."
+  },
 
   "origin": { "code": "ALA", "city": "ALMATY", "lat": 43.2389, "lng": 76.8897 },
 

@@ -1,6 +1,6 @@
-// Copies ../content (single source of truth) and ../assets into the app before dev/build.
+// Copies ../content (single source of truth) and ../assets/brand into the app before dev/build.
 // If the parent folders are absent (e.g. the site folder was deployed alone), the existing copy is kept.
-import { cpSync, existsSync, readdirSync, copyFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readdirSync, copyFileSync, rmSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -12,13 +12,12 @@ if (existsSync(content)) {
   cpSync(content, join(root, 'src', 'content'), { recursive: true })
   console.log('[sync] content/ → src/content/')
 }
-if (existsSync(assets)) {
-  const files = readdirSync(assets)
-  const logo = files.find((f) => /^logo\.(svg|png)$/i.test(f))
-  // A real logo overrides the placeholder mark everywhere.
-  const mark = logo ?? 'mark.svg'
-  const ext = mark.split('.').pop()
-  copyFileSync(join(assets, mark), join(root, 'src', 'assets', `mark.${ext}`))
-  if (!logo) copyFileSync(join(assets, 'favicon.svg'), join(root, 'public', 'favicon.svg'))
-  console.log(`[sync] assets/${mark} → src/assets/mark.${ext}`)
+if (existsSync(join(assets, 'brand'))) {
+  const dst = join(root, 'src', 'assets', 'brand')
+  mkdirSync(dst, { recursive: true })
+  for (const f of readdirSync(join(assets, 'brand')).filter((f) => f.endsWith('.svg'))) copyFileSync(join(assets, 'brand', f), join(dst, f))
+  copyFileSync(join(assets, 'favicon.svg'), join(root, 'public', 'favicon.svg'))
+  // v1 placeholder mark is gone for good.
+  rmSync(join(root, 'src', 'assets', 'mark.svg'), { force: true })
+  console.log('[sync] assets/brand/*.svg → src/assets/brand/, favicon.svg → public/')
 }

@@ -1,26 +1,21 @@
 import type { Dict } from '../i18n'
-import { digits, isEmpty, isTodo, site, siteUrl } from './site'
+import { cleanUrl, digits, site, siteUrl, usable } from './site'
+import { managers } from './links'
 
 const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/([,;])/g, '\\$1')
-const ok = (v: string | undefined): v is string => !!v && !isEmpty(v) && !isTodo(v)
 
-/** vCard 3.0. TODO values are never included. */
+/** vCard 3.0: one card, both managers as labelled phones. TODO values are never included. */
 export function buildVCard(t: Dict): string {
   const lines = ['BEGIN:VCARD', 'VERSION:3.0', `N:;${esc(site.brand)};;;`, `FN:${esc(site.brand)}`, `ORG:${esc(site.brand)}`]
-  const phone = site.contacts.phone
-  const wa = site.contacts.whatsapp
-  if (ok(phone)) lines.push(`TEL;TYPE=CELL,VOICE:+${digits(phone)}`)
-  if (ok(wa) && (!ok(phone) || digits(wa) !== digits(phone))) lines.push(`TEL;TYPE=CELL:+${digits(wa)}`)
-  if (ok(site.contacts.email)) lines.push(`EMAIL;TYPE=INTERNET:${site.contacts.email}`)
-  if (ok(site.domain)) lines.push(`URL:${siteUrl()}`)
-  if (ok(site.contacts.instagram)) {
-    const ig = `https://www.instagram.com/${site.contacts.instagram.replace(/^@/, '')}/`
-    lines.push(`X-SOCIALPROFILE;TYPE=instagram:${ig}`)
-    if (!ok(site.domain)) lines.push(`URL:${ig}`)
+  let item = 1
+  for (const m of site.managers) {
+    if (!usable(m.phone)) continue
+    const name = managers(t).find((x) => x.id === m.id)?.name ?? m.id
+    lines.push(`item${item}.TEL;type=CELL:+${digits(m.phone)}`, `item${item}.X-ABLabel:${esc(name)}`)
+    item++
   }
-  if (ok(site.contacts.telegram)) {
-    lines.push(`X-SOCIALPROFILE;TYPE=telegram:https://t.me/${site.contacts.telegram.replace(/^@/, '')}`)
-  }
+  if (usable(site.domain)) lines.push(`URL:${siteUrl()}`)
+  for (const s of site.socials) lines.push(`X-SOCIALPROFILE;type=${s.id}:${cleanUrl(s.url)}`)
   lines.push(`NOTE:${esc(t.brand.tagline)}`, 'END:VCARD')
   return lines.join('\r\n') + '\r\n'
 }

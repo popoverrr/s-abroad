@@ -1,9 +1,12 @@
-import { useMemo } from 'react'
+import { lazy, Suspense, useMemo } from 'react'
 import { useI18n } from '../i18n'
 import { site, siteUrl } from '../lib/site'
 import { downloadVCard } from '../lib/vcard'
 import { share } from '../lib/share'
-import { QrCode } from './QrCode'
+import { useMedia } from '../lib/motion'
+
+// QR is shown on ≥ 768 px only — load the generator lazily so phones never download it.
+const QrCode = lazy(() => import('./QrCode').then((m) => ({ default: m.QrCode })))
 
 /** Decorative barcode derived from the brand string — purely visual. */
 function Barcode() {
@@ -45,52 +48,40 @@ function IconShare() {
     </svg>
   )
 }
-function IconQr() {
-  return (
-    <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
-      <path d="M3 3h5v5H3zM12 3h5v5h-5zM3 12h5v5H3zM12 12h2v2h-2zM15 15h2v2h-2zM15 12h2M12 16v1" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    </svg>
-  )
-}
 
-export function Stub({ onShowQr, onToast }: { onShowQr: () => void; onToast: (m: string) => void }) {
+export function Stub({ onToast }: { onToast: (m: string) => void }) {
   const { t, lang } = useI18n()
-  const url = siteUrl()
-
+  const wide = useMedia('(min-width: 768px)')
   const onShare = async () => {
-    const r = await share(t, lang)
-    if (r === 'copied') onToast(t.stub.copied)
+    if ((await share(t, lang)) === 'copied') onToast(t.stub.copied)
   }
-
   return (
     <div className="stub">
       <div className="stub-main">
         <div className="stub-qr">
-          <QrCode value={url} size={112} />
+          {wide && (
+            <Suspense fallback={<span className="qr" style={{ width: 104, height: 104 }} />}>
+              <QrCode value={siteUrl()} size={104} />
+            </Suspense>
+          )}
         </div>
         <div className="stub-side">
-          <p className="stub-scan t-fade">{t.stub.scan}</p>
+          <p className="stub-scan">{t.stub.scan}</p>
           <div className="stub-actions">
             <button type="button" className="pill" onClick={() => downloadVCard(t)}>
               <IconSave />
-              <span className="t-fade">{t.stub.save_contact}</span>
+              <span>{t.stub.save_contact}</span>
             </button>
             <button type="button" className="pill" onClick={onShare}>
               <IconShare />
-              <span className="t-fade">{t.stub.share}</span>
+              <span>{t.stub.share}</span>
             </button>
           </div>
-          <button type="button" className="show-qr" onClick={onShowQr}>
-            <IconQr />
-            <span className="t-fade">{t.stub.show_qr}</span>
-          </button>
         </div>
       </div>
       <div className="stub-foot" aria-hidden="true">
         <Barcode />
-        <span className="mono">
-          S-ABROAD · {site.year} · SEAT 01A
-        </span>
+        <span className="mono">S-ABROAD · {site.year} · SEAT 01A</span>
       </div>
     </div>
   )

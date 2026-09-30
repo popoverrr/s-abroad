@@ -1,121 +1,85 @@
-import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '../i18n'
-import { useSound } from '../audio/SoundProvider'
-import { waHref } from '../lib/links'
-import { anchorProps } from '../lib/links'
-import { prefersReducedMotion, seeded } from '../lib/motion'
+import { useMedia, seeded } from '../lib/motion'
 
-const R = 50 // ring text radius in a 132 viewBox
-const CIRC = 2 * Math.PI * R
-
+// 32-unit line icons, drawn at scale 2 in a 200 viewBox (stroke 2.5 × 2 = 5 units).
 const ICONS = [
   // graduation cap
-  'M4 10.5 16 5l12 5.5-12 5.5-12-5.5ZM9 13v6c2 2 4.5 3 7 3s5-1 7-3v-6M28 10.5V17',
+  'M4 12 16 6.5 28 12 16 17.5ZM9 14.5v5.5c2 2 4.5 3 7 3s5-1 7-3v-5.5M28 12v6',
   // speech bubble
   'M6 8.5A3.5 3.5 0 0 1 9.5 5h13A3.5 3.5 0 0 1 26 8.5v8a3.5 3.5 0 0 1-3.5 3.5H15l-5.5 4.5V20H9.5A3.5 3.5 0 0 1 6 16.5ZM11 11h10M11 15h6',
-  // suitcase + sun
-  'M7 13h18v11H7ZM12 13v-2.5A1.5 1.5 0 0 1 13.5 9h5a1.5 1.5 0 0 1 1.5 1.5V13M12 13v11M20 13v11M25 4.5a2.5 2.5 0 1 1 0 .01M25 1v1M29 5h-1M22 5h-1',
+  // suitcase
+  'M6 12h20v13H6ZM12 12V9.5A1.5 1.5 0 0 1 13.5 8h5A1.5 1.5 0 0 1 20 9.5V12M12 12v13M20 12v13',
   // passport
-  'M9 4h13a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H9ZM9 4v24M16.5 12.5a3.5 3.5 0 1 0 .01 0M13 12.5h7M16.5 9c1.2 1 1.2 6 0 7M16.5 9c-1.2 1-1.2 6 0 7M13 21h7',
+  'M9 4h13a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H9ZM9 4v24M16.5 10a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7M13 22h7',
 ]
 
-function StampSvg({ i, ring, title }: { i: number; ring: string; title: string }) {
-  const id = `ink-${i}`
-  const reps = Math.max(1, Math.round(CIRC / (ring.length * 7.4)))
-  const text = Array.from({ length: reps }, () => ring).join(' ')
-  const fs = Math.min(10, CIRC / (text.length * 0.7))
-  const tfs = Math.min(12, 78 / (title.length * 0.66))
+const R_TEXT = 70
+const CIRC = 2 * Math.PI * R_TEXT
+
+/** Crisp stamp: plain vector, no filters. Rotation lives inside the SVG; "ink wear" is a sharp-edged mask. */
+function StampSvg({ i, ring, withRing }: { i: number; ring: string; withRing: boolean }) {
+  const id = `st-${i}`
+  const rot = Math.round(seeded(i + 1) * 20 - 10)
+  // Repeat the ring text around the circle: TEXT • TEXT • …
+  const unit = `${ring} • `
+  // Fill the circle with natural spacing: repeat short rings, then size the font (≥ 18 units) to fit.
+  const reps = Math.max(1, Math.round(CIRC / (unit.length * 20 * 0.66)))
+  const text = unit.repeat(reps)
+  const fs = Math.max(18, Math.min(24, CIRC / (text.length * 0.68)))
+  const nicks = Array.from({ length: 8 }, (_, k) => {
+    const a = seeded(i * 13 + k) * Math.PI * 2
+    const r = 60 + seeded(i * 7 + k * 3) * 36
+    return { x: 100 + Math.cos(a) * r, y: 100 + Math.sin(a) * r, s: 1.6 + seeded(k + i * 5) * 2.6 }
+  })
   return (
-    <svg viewBox="0 0 132 132" className="stamp-svg" aria-hidden="true">
+    <svg viewBox="0 0 200 200" className="stamp-svg" aria-hidden="true" shapeRendering="geometricPrecision" textRendering="geometricPrecision">
       <defs>
-        <filter id={id} x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed={i + 3} result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" result="d" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed={i + 11} result="speck" />
-          <feColorMatrix in="speck" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -4 0 0 0 2.9" result="mask" />
-          <feComposite in="d" in2="mask" operator="in" />
-        </filter>
-        <path id={`${id}-p`} d={`M66 ${66 - R}a${R} ${R} 0 1 1-.01 0`} />
+        <mask id={`${id}-m`} maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+          <rect width="200" height="200" fill="#fff" />
+          {nicks.map((n, k) => (k % 3 === 0 ? <rect key={k} x={n.x - n.s * 1.6} y={n.y - 0.9} width={n.s * 3.2} height="1.8" rx=".9" fill="#000" transform={`rotate(${Math.round(n.x * 3)} ${n.x} ${n.y})`} /> : <circle key={k} cx={n.x} cy={n.y} r={n.s} fill="#000" />))}
+        </mask>
+        <path id={`${id}-p`} d={`M100 ${100 - R_TEXT}a${R_TEXT} ${R_TEXT} 0 1 1-.01 0`} />
       </defs>
-      <g filter={`url(#${id})`} fill="currentColor" stroke="currentColor">
-        <circle cx="66" cy="66" r="63" fill="none" strokeWidth="2.6" />
-        <circle cx="66" cy="66" r="58.5" fill="none" strokeWidth="1" />
-        <circle cx="66" cy="66" r="41" fill="none" strokeWidth="1.2" />
-        <text className="stamp-ring" fontSize={fs} stroke="none">
-          <textPath href={`#${id}-p`} textLength={CIRC - 2} lengthAdjust="spacing">
-            {text}
-          </textPath>
-        </text>
-        <path d={ICONS[i % ICONS.length]} transform="translate(50 36)" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        <text x="66" y="84" textAnchor="middle" className="stamp-title" fontSize={tfs} stroke="none">
-          {title.toUpperCase()}
-        </text>
+      <g transform={`rotate(${rot} 100 100)`} mask={`url(#${id}-m)`} fill="currentColor" stroke="currentColor">
+        <circle cx="100" cy="100" r="94" fill="none" strokeWidth="4" />
+        <circle cx="100" cy="100" r="87" fill="none" strokeWidth="1.5" />
+        {withRing && (
+          <>
+            <circle cx="100" cy="100" r="60" fill="none" strokeWidth="1.5" />
+            <text className="stamp-ring" fontSize={fs.toFixed(1)} letterSpacing="2" stroke="none">
+              <textPath href={`#${id}-p`} textLength={CIRC - 4} lengthAdjust="spacing">
+                {text}
+              </textPath>
+            </text>
+          </>
+        )}
+        <path
+          d={ICONS[i % ICONS.length]}
+          transform={withRing ? 'translate(68 68) scale(2)' : 'translate(52 52) scale(3)'}
+          fill="none"
+          strokeWidth={withRing ? 2.5 : 5 / 3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </g>
     </svg>
   )
 }
 
-export function Stamps({ intro }: { intro: boolean }) {
+/** Four service stamps in one row — a visual list, not links. */
+export function Stamps() {
   const { t } = useI18n()
-  const { stamp } = useSound()
-  const ref = useRef<HTMLDivElement>(null)
-  // 'static' = already visible without animation, 'wait' = hidden until in view, 'go' = stamping
-  const [state, setState] = useState<'static' | 'wait' | 'go'>(() => (prefersReducedMotion() ? 'static' : 'wait'))
-
-  useEffect(() => {
-    if (state !== 'wait') return
-    const el = ref.current!
-    const r = el.getBoundingClientRect()
-    const inViewNow = r.top < innerHeight && r.bottom > 0
-    if (inViewNow && !intro) {
-      setState('static')
-      return
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return
-        io.disconnect()
-        setState('go')
-      },
-      { threshold: 0.35 },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [state, intro])
-
-  // Thuds in sync with the CSS stamping (base delay + 140 ms each, impact at ~45 % of the animation).
-  useEffect(() => {
-    if (state !== 'go') return
-    const base = intro ? 900 : 0
-    const timers = t.services.map((_, i) => window.setTimeout(stamp, base + i * 140 + 150))
-    return () => timers.forEach(clearTimeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state])
-
+  const wide = useMedia('(min-width: 768px)')
   return (
-    <div className={`stamps stamps--${state} ${intro ? 'stamps--intro' : ''}`} ref={ref}>
-      {t.services.map((s, i) => {
-        const rot = Math.round(seeded(i + 1) * 24 - 12)
-        const wa = waHref(s.wa)
-        return (
-          <a
-            key={i}
-            {...anchorProps({ ...wa, external: false })}
-            className={`stamp stamp--${i % 2 ? 'blue' : 'orange'}`}
-            style={{ ['--rot' as string]: `${rot}deg`, ['--i' as string]: i }}
-            aria-label={`${s.title}. ${s.text}`}
-            onPointerEnter={(e) => e.pointerType === 'mouse' && e.currentTarget.classList.add('is-hover')}
-            onPointerLeave={(e) => e.currentTarget.classList.remove('is-hover')}
-          >
-            <span className="stamp-inner">
-              <StampSvg i={i} ring={s.ring} title={s.title} />
-            </span>
-            <span className="stamp-tip t-fade" aria-hidden="true">
-              {s.text}
-            </span>
-          </a>
-        )
-      })}
-    </div>
+    <ul className="stamps">
+      {t.services.map((s, i) => (
+        <li key={i} className={`stamp stamp--${i % 2 ? 'mint' : 'gold'}`}>
+          <span className="stamp-inner">
+            <StampSvg i={i} ring={s.ring.toUpperCase()} withRing={wide} />
+          </span>
+          <span className="stamp-title">{s.title}</span>
+        </li>
+      ))}
+    </ul>
   )
 }

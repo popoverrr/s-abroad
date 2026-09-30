@@ -19,21 +19,21 @@ function seo(): Plugin {
       handler(html, ctx) {
         const site = read()
         const ru = JSON.parse(readFileSync(here('./src/content/i18n/ru.json'), 'utf8'))
-        const domain = ok(site.domain) ? `https://${site.domain.replace(/^https?:\/\//, '').replace(/\/+$/, '')}` : ''
-        const url = domain ? domain + base : ''
+        // domain is a full URL (may already include the Pages base path)
+        const url = ok(site.domain) ? (/^https?:\/\//.test(site.domain) ? site.domain : `https://${site.domain}`).replace(/\/*$/, '/') : ''
         const og = url ? `${url}og.png` : `${base}og.png`
-        const sameAs = site.links
-          .filter((l: { type: string; enabled?: boolean; handle?: string }) => l.type === 'instagram' && l.enabled !== false && l.handle)
-          .map((l: { handle: string }) => `https://www.instagram.com/${l.handle}/`)
+        const sameAs = site.socials.map((x: { url: string }) => x.url.split(/[?#]/)[0])
+        const phones = site.managers.filter((m: { phone: string }) => ok(m.phone)).map((m: { phone: string }) => '+' + m.phone.replace(/\D/g, ''))
         const ld: Record<string, unknown> = {
           '@context': 'https://schema.org',
           '@type': 'EducationalOrganization',
           name: site.brand,
           description: ru.meta.description,
           sameAs,
+          telephone: phones,
+          contactPoint: phones.map((telephone: string) => ({ '@type': 'ContactPoint', telephone, contactType: 'customer service', availableLanguage: ['ru', 'kk', 'en'] })),
         }
         if (url) ld.url = url
-        if (ok(site.contacts.phone)) ld.telephone = '+' + site.contacts.phone.replace(/\D/g, '')
         let out = html
           .replaceAll('%OG_IMAGE%', og)
           .replace('<!--JSON-LD-->', `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)

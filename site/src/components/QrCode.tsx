@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import QR from 'qrcode'
-import { Mark } from './Mark'
+import { MarkS } from './Brand'
 
-/** QR as crisp SVG with rounded modules, rounded finder eyes and a quiet centre for the mark (level H). */
+/** QR as crisp SVG with rounded modules, rounded finder eyes and a quiet centre for the S mark (level H). */
 export function QrCode({ value, size, className = '', withMark = true }: { value: string; size: number | string; className?: string; withMark?: boolean }) {
   const { n, path, eyes } = useMemo(() => {
     const qr = QR.create(value, { errorCorrectionLevel: 'H' })
@@ -37,7 +37,7 @@ export function QrCode({ value, size, className = '', withMark = true }: { value
           </g>
         ))}
       </svg>
-      {withMark && <Mark className="qr-mark" size={0} />}
+      {withMark && <MarkS className="qr-mark" size={0} />}
     </span>
   )
 }

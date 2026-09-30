@@ -8,44 +8,23 @@
   "lang": { "label": "Language" },
   "hero": {
     "eyebrow": "Education agency",
-    "title_lines": ["The world", "is your", "campus."],
+    "title_lines": ["The world is", "your campus."],
     "subtitle": ["Top university admission", "Language courses", "Holidays", "Visas"]
   },
-  "board": { "from": "From", "to": "To", "time": "Time", "status": "Now boarding", "sr": "Destinations: Prague, Brno, Vienna, Berlin, Milan, Warsaw, Budapest, London and more" },
-  "pass": {
-    "title": "Boarding pass",
-    "from_city": "Almaty",
-    "to_city": "Europe & the world",
-    "passenger": "Passenger", "passenger_value": "You",
-    "class": "Class", "class_value": "Student",
-    "boarding": "Boarding", "boarding_value": "Now",
-    "gates": "Gates"
-  },
-  "badge": { "free": "free" },
-  "links": {
-    "consult": "Free consultation",
-    "instagram": "Instagram",
-    "call": "Call us",
-    "telegram": "Telegram",
-    "branch_ukr": "Ukraine branch",
-    "branch_west": "S Abroad West"
-  },
+  "board": { "status": "Now boarding", "sr": "Destinations: Prague, Brno, Vienna, Berlin, Milan, Warsaw, Budapest, London and more" },
+  "pass": { "title": "Boarding pass", "passenger": "Passenger", "passenger_value": "You", "class": "Class", "class_value": "Student" },
+  "cta": { "primary": "Message on WhatsApp", "primary_sub": "Free consultation" },
+  "chooser": { "title": "Who would you like to message?", "sub": "Pick a manager — we reply on WhatsApp", "close": "Close" },
+  "managers": { "title": "Managers", "role": "Manager", "ramil": "Ramil", "gainel": "Gainel" },
+  "actions": { "call": "Call", "whatsapp": "WhatsApp", "call_to": "Call {name}", "wa_to": "WhatsApp {name}" },
+  "socials": { "title": "Follow us" },
   "services": [
-    { "title": "Admission", "ring": "TOP UNIVERSITIES •", "text": "We help you choose a university and get in — in Czechia and beyond.", "wa": "Hello! I'd like to learn about university admission abroad." },
-    { "title": "Languages", "ring": "LANGUAGE COURSES •", "text": "Language courses abroad — in the country where it's spoken.", "wa": "Hello! I'm interested in language courses abroad." },
-    { "title": "Holidays", "ring": "HOLIDAYS ABROAD •", "text": "Holidays abroad: study, new friends and experiences.", "wa": "Hello! I'd like to learn about holidays abroad." },
-    { "title": "Visas", "ring": "VISA SUPPORT •", "text": "Support with documents and your visa.", "wa": "Hello! I need help with a visa." }
+    { "title": "Admission", "ring": "TOP UNIVERSITIES" },
+    { "title": "Languages", "ring": "LANGUAGE COURSES" },
+    { "title": "Holidays", "ring": "HOLIDAYS ABROAD" },
+    { "title": "Visas", "ring": "VISA SUPPORT" }
   ],
-  "stub": {
-    "scan": "Scan to open on your phone",
-    "save_contact": "Save contact",
-    "share": "Share",
-    "show_qr": "Show QR to a friend",
-    "close": "Close",
-    "copied": "Link copied"
-  },
-  "cta": { "primary": "Free consultation" },
-  "wa": { "default": "Hello! I'd like a free consultation about studying abroad." },
-  "footer": { "left": "Study & travel abroad", "ukraine": "We're also in Ukraine" },
-  "intro": { "skip": "Skip" }
+  "stub": { "scan": "Scan to open on your phone", "save_contact": "Save contact", "share": "Share", "copied": "Link copied" },
+  "wa": { "default": "Hello, {name}! I'd like a free consultation about studying abroad." },
+  "footer": { "left": "Study & travel abroad" }
 }

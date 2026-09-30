@@ -1,70 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import { LANGS, LANG_LABEL, useI18n, type Lang } from '../i18n'
+import { LANGS, LANG_LABEL, useI18n } from '../i18n'
 import { useSound } from '../audio/SoundProvider'
-import { Mark } from './Mark'
+import { Logo } from './Brand'
 import { site } from '../lib/site'
-
-function LangSwitch() {
-  const { lang, setLang, t } = useI18n()
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!open) return
-    const close = (e: Event) => {
-      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !ref.current?.contains(e.target as Node)) setOpen(false)
-    }
-    document.addEventListener('pointerdown', close)
-    document.addEventListener('keydown', close)
-    return () => {
-      document.removeEventListener('pointerdown', close)
-      document.removeEventListener('keydown', close)
-    }
-  }, [open])
-
-  const pick = (l: Lang) => {
-    setLang(l)
-    setOpen(false)
-  }
-
-  return (
-    <>
-      {/* Desktop / tablet: four buttons */}
-      <div className="langs langs--row" role="group" aria-label={t.lang.label}>
-        {LANGS.map((l) => (
-          <button key={l} type="button" lang={l} aria-pressed={l === lang} className="lang-btn" onClick={() => pick(l)}>
-            {LANG_LABEL[l]}
-          </button>
-        ))}
-      </div>
-      {/* Mobile: current code, tap to open */}
-      <div className="langs langs--menu" ref={ref}>
-        <button
-          type="button"
-          className="lang-current"
-          aria-haspopup="true"
-          aria-expanded={open}
-          aria-label={`${t.lang.label}: ${LANG_LABEL[lang]}`}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {LANG_LABEL[lang]}
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-            <path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          </svg>
-        </button>
-        {open && (
-          <div className="lang-pop" role="group" aria-label={t.lang.label}>
-            {LANGS.map((l) => (
-              <button key={l} type="button" lang={l} aria-pressed={l === lang} className="lang-btn" onClick={() => pick(l)}>
-                {LANG_LABEL[l]}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
 
 function SoundButton() {
   const { on, toggle } = useSound()
@@ -83,18 +20,22 @@ function SoundButton() {
 }
 
 export function TopBar() {
-  const { t } = useI18n()
+  const { t, lang, setLang } = useI18n()
   return (
     <header className="topbar">
       <a className="brand" href={import.meta.env.BASE_URL} aria-label={site.brand}>
-        <Mark size={30} />
-        <span className="brand-text">
-          <b>{site.brand}</b>
-          <small className="t-fade">{t.brand.tagline}</small>
-        </span>
+        <Logo />
+        <small className="brand-tagline t-fade">{t.brand.tagline}</small>
       </a>
       <div className="tools">
-        <LangSwitch />
+        {/* All four languages are always visible: one tap to switch. */}
+        <div className="langs" role="group" aria-label={t.lang.label}>
+          {LANGS.map((l) => (
+            <button key={l} type="button" lang={l} aria-pressed={l === lang} className="lang-btn" onClick={() => setLang(l)}>
+              {LANG_LABEL[l]}
+            </button>
+          ))}
+        </div>
         <SoundButton />
       </div>
     </header>
