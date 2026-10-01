@@ -2,7 +2,7 @@
   "_readme": "v2. Единый источник контактов. \"\" = скрыть. Строка TODO… = заполнить перед публикацией (npm run check:todo). Телефоны — только цифры с кодом страны, без +.",
 
   "brand": "S ABROAD",
-  "domain": "https://popoverrr.github.io/s-abroad/",
+  "domain": "https://s-abroad.asia/",
   "_domain_note": "Сейчас сайт на GitHub Pages. При переезде на свой домен — поменять здесь, QR/OG/vCard пересоберутся.",
   "year": 2026,
 

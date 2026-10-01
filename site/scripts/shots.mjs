@@ -33,7 +33,7 @@ const fail = (m) => problems.push(m)
 
 for (const lang of langs) {
   for (const name of sizes) {
-    const ctx = await browser.newContext({ ...SIZES[name], locale: lang === 'kk' ? 'kk-KZ' : 'ru-RU' })
+    const ctx = await browser.newContext({ ...SIZES[name], ignoreHTTPSErrors: !!process.env.BASE_URL, locale: lang === 'kk' ? 'kk-KZ' : 'ru-RU' })
     const page = await ctx.newPage()
     const errors = []
     page.on('pageerror', (e) => errors.push(String(e)))
@@ -123,7 +123,7 @@ for (const lang of langs) {
     }
     if (name === 'd1920' && lang === 'ru') {
       const box = await page.locator('.stamp-inner').first().boundingBox()
-      const ctx3 = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 3 })
+      const ctx3 = await browser.newContext({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 3, ignoreHTTPSErrors: !!process.env.BASE_URL })
       const p3 = await ctx3.newPage()
       await p3.goto(`${url}/?lang=ru`, { waitUntil: 'networkidle' })
       await p3.screenshot({ path: join(out, 'stamp-zoom-desktop-src.png'), clip: { x: box.x - 4, y: box.y - 4, width: box.width + 8, height: box.height + 8 } })

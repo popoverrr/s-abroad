@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import './sync-content.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const out = join(root, 'public', 'icons')
+const out = join(root, 'public', 'pwa')
 mkdirSync(out, { recursive: true })
 
 const INK = '#07120C'
@@ -38,9 +38,9 @@ const manifest = {
   background_color: INK,
   theme_color: INK,
   icons: [
-    { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-    { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-    { src: 'icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    { src: 'pwa/icon-192.png', sizes: '192x192', type: 'image/png' },
+    { src: 'pwa/icon-512.png', sizes: '512x512', type: 'image/png' },
+    { src: 'pwa/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
   ],
 }
 writeFileSync(join(root, 'public', 'manifest.webmanifest'), JSON.stringify(manifest, null, 2) + '\n')
