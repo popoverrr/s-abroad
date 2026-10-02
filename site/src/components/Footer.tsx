@@ -5,7 +5,13 @@ export function Footer() {
   const { t } = useI18n()
   return (
     <footer className="footer">
-      {site.brand} · {site.year} · {t.footer.left}
+      <span className="footer-left">
+        {site.brand} · {site.year} · {t.footer.left}
+      </span>
+      <a className="credit" href="https://cybermove.asia" target="_blank" rel="noopener">
+        Create by <b>Cyber Move Consulting</b>
+        <span aria-hidden="true"> ↗</span>
+      </a>
     </footer>
   )
 }
