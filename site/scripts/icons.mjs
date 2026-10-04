@@ -9,8 +9,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const out = join(root, 'public', 'pwa')
 mkdirSync(out, { recursive: true })
 
-const INK = '#07120C'
-const BRAND = '#195231'
+const INK = '#00754A' // theme & background colour = field
+const BRAND = '#00754A'
 const markPath = join(root, 'src', 'assets', 'brand', 'mark-s.svg')
 
 /** White S mark on the brand green; `pad` = share of the canvas left around the mark. */

@@ -13,6 +13,9 @@ const ICONS = [
   'M9 4h13a2 2 0 0 1 2 2v20a2 2 0 0 1-2 2H9ZM9 4v24M16.5 10a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7M13 22h7',
 ]
 
+// Admission, Languages, Holidays, Visas
+const STAMP_COLORS = ['lime', 'pink', 'orange', 'violet']
+
 const R_TEXT = 70
 const CIRC = 2 * Math.PI * R_TEXT
 
@@ -41,8 +44,10 @@ function StampSvg({ i, ring, withRing }: { i: number; ring: string; withRing: bo
         <path id={`${id}-p`} d={`M100 ${100 - R_TEXT}a${R_TEXT} ${R_TEXT} 0 1 1-.01 0`} />
       </defs>
       <g transform={`rotate(${rot} 100 100)`} mask={`url(#${id}-m)`} fill="currentColor" stroke="currentColor">
-        <circle cx="100" cy="100" r="94" fill="none" strokeWidth="4" />
-        <circle cx="100" cy="100" r="87" fill="none" strokeWidth="1.5" />
+        {/* sticker: solid disc + ink edge (4) + thin inner ring (1.5) */}
+        <circle className="stamp-disc" cx="100" cy="100" r="96" stroke="none" />
+        <circle className="stamp-edge" cx="100" cy="100" r="96" fill="none" strokeWidth="4" />
+        <circle cx="100" cy="100" r="86" fill="none" strokeWidth="1.5" />
         {withRing && (
           <>
             <circle cx="100" cy="100" r="60" fill="none" strokeWidth="1.5" />
@@ -73,7 +78,7 @@ export function Stamps() {
   return (
     <ul className="stamps">
       {t.services.map((s, i) => (
-        <li key={i} className={`stamp stamp--${i % 2 ? 'mint' : 'gold'}`}>
+        <li key={i} className={`stamp stamp--${STAMP_COLORS[i % STAMP_COLORS.length]}`}>
           <span className="stamp-inner">
             <StampSvg i={i} ring={s.ring.toUpperCase()} withRing={wide} />
           </span>

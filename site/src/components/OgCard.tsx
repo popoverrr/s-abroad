@@ -66,7 +66,9 @@ export function OgCard() {
             <b>EUR</b>
           </div>
           <span className="cta-main">
-            <WaIcon size={24} />
+            <span className="cta-ico">
+              <WaIcon size={22} />
+            </span>
             <span className="cta-main-text">
               <b>{ru.cta.primary}</b>
               <small>{ru.cta.primary_sub}</small>
@@ -77,7 +79,7 @@ export function OgCard() {
             <ul>
               {managers(ru).map((mg) => (
                 <li key={mg.id} className="manager">
-                  <span className="avatar">{mg.initial}</span>
+                  <span className={`avatar avatar--${mg.id}`}>{mg.initial}</span>
                   <span className="manager-text">
                     <b>{mg.name}</b>
                     <span className="manager-phone">{mg.phoneLabel}</span>

@@ -3,9 +3,9 @@ import type { Arc, Globe as CobeGlobe, Marker } from 'cobe'
 import { site } from '../lib/site'
 import { prefersReducedMotion } from '../lib/motion'
 
-// v2 palette: Almaty in gold, destinations in mint.
-const GOLD: [number, number, number] = [0.894, 0.725, 0.416]
-const MINT: [number, number, number] = [0.557, 0.82, 0.651]
+// v3 palette: Almaty and the arc in lime, destinations white.
+const LIME: [number, number, number] = [0.82, 1, 0.23]
+const WHITE: [number, number, number] = [1, 1, 1]
 const deg = Math.PI / 180
 
 // Start between Almaty and Prague: cobe's phi for longitude L is π − (L·π/180 − π/2).
@@ -42,21 +42,21 @@ function FallbackGlobe() {
     <svg className="globe-fallback" viewBox="0 0 100 100" aria-hidden="true">
       <defs>
         <radialGradient id="gf" cx="40%" cy="35%" r="70%">
-          <stop offset="0" stopColor="#17301f" />
-          <stop offset="1" stopColor="#08140d" />
+          <stop offset="0" stopColor="#00754A" />
+          <stop offset="1" stopColor="#00643F" />
         </radialGradient>
       </defs>
-      <circle cx="50" cy="50" r="46" fill="url(#gf)" stroke="#1f3a2b" strokeWidth=".4" />
+      <circle cx="50" cy="50" r="46" fill="url(#gf)" stroke="#0B0B0B" strokeWidth=".4" />
       {[-60, -30, 0, 30, 60].map((l) => (
-        <ellipse key={l} cx="50" cy={50 - Math.sin(l * deg) * 46 * Math.cos(lat0)} rx={46 * Math.cos(l * deg)} ry={46 * Math.cos(l * deg) * Math.sin(lat0)} fill="none" stroke="#1a3326" strokeWidth=".25" />
+        <ellipse key={l} cx="50" cy={50 - Math.sin(l * deg) * 46 * Math.cos(lat0)} rx={46 * Math.cos(l * deg)} ry={46 * Math.cos(l * deg) * Math.sin(lat0)} fill="none" stroke="#0A8F5C" strokeWidth=".25" />
       ))}
       {pts.slice(1).map(([x, y], i) => (
         <g key={i}>
-          <path d={`M${ax} ${ay} Q ${(ax + x) / 2} ${Math.min(ay, y) - 10} ${x} ${y}`} fill="none" stroke="#E4B96A" strokeWidth=".3" opacity=".45" />
-          <circle cx={x} cy={y} r=".9" fill="#8ED1A6" />
+          <path d={`M${ax} ${ay} Q ${(ax + x) / 2} ${Math.min(ay, y) - 10} ${x} ${y}`} fill="none" stroke="#D2FF3A" strokeWidth=".4" />
+          <circle cx={x} cy={y} r=".9" fill="#FFFFFF" />
         </g>
       ))}
-      <circle cx={ax} cy={ay} r="1.8" fill="#E4B96A" />
+      <circle cx={ax} cy={ay} r="1.8" fill="#D2FF3A" />
     </svg>
   )
 }
@@ -95,12 +95,12 @@ export function Globe({ active, className = '' }: { active: number; className?: 
       const p = pulse.current
       const k = Math.max(0, 1 - (now - p.t) / 600)
       return [
-        { location: origin, size: 0.028, color: GOLD },
+        { location: origin, size: 0.028, color: LIME },
         ...site.destinations.map((d, i) => ({
           location: [d.lat, d.lng] as [number, number],
           // The current board city swells ×1.8 for 600 ms, then stays slightly larger.
           size: 0.014 * (i === p.index ? 1.25 + 0.55 * Math.sin(k * Math.PI) : 1),
-          color: MINT,
+          color: WHITE,
         })),
       ]
     }
@@ -150,13 +150,14 @@ export function Globe({ active, className = '' }: { active: number; className?: 
           dark: 1,
           diffuse: 1.2,
           mapSamples: 16000,
-          mapBrightness: 5,
-          baseColor: [0.13, 0.2, 0.16],
-          markerColor: MINT,
-          glowColor: [0.1, 0.24, 0.16],
+          mapBrightness: 9,
+          // 06 asks for [0, 0.36, 0.22]; a touch of red makes the dots read lime-green instead of teal.
+          baseColor: [0.14, 0.4, 0.16],
+          markerColor: WHITE,
+          glowColor: [0.0, 0.46, 0.29],
           markers: markers(performance.now()),
           arcs: arcs(),
-          arcColor: GOLD,
+          arcColor: LIME,
           arcWidth: 0.6,
           arcHeight: 0.28,
           markerElevation: 0.01,

@@ -32,7 +32,7 @@ function Managers() {
       <ul>
         {managers(t).map((mg) => (
           <li key={mg.id} className="manager">
-            <span className="avatar" aria-hidden="true">
+            <span className={`avatar avatar--${mg.id}`} aria-hidden="true">
               {mg.initial}
             </span>
             <span className="manager-text">
@@ -72,7 +72,7 @@ function Socials() {
           const Icon = SOCIAL_ICON[s.id]
           return (
             <li key={s.id}>
-              <a href={cleanUrl(s.url)} target="_blank" rel="noopener" className="social" aria-label={`${s.label} ${s.handle}`}>
+              <a href={cleanUrl(s.url)} target="_blank" rel="noopener" className={`social social--${s.id}`} aria-label={`${s.label} ${s.handle}`}>
                 {Icon && <Icon size={18} />}
                 <span>{s.label}</span>
               </a>
@@ -174,7 +174,9 @@ export function BoardingPass({ onChoose, choosing, onToast }: { onChoose: (el: H
             </p>
 
             <button type="button" id="main-cta" className="cta-main" aria-haspopup="dialog" aria-expanded={choosing} onClick={(e) => onChoose(e.currentTarget)}>
-              <WaIcon size={24} />
+              <span className="cta-ico" aria-hidden="true">
+                <WaIcon size={22} />
+              </span>
               <span className="cta-main-text">
                 <b>{t.cta.primary}</b>
                 <small>{t.cta.primary_sub}</small>

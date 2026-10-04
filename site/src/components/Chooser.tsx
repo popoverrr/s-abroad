@@ -129,7 +129,7 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
                   leaving.current = true
                   setTimeout(onClose, 50)
                 }}>
-                <span className="avatar" aria-hidden="true">
+                <span className={`avatar avatar--${m.id}`} aria-hidden="true">
                   {m.initial}
                 </span>
                 <span className="pick-text">

@@ -1,10 +1,11 @@
-import raw from '../content/site.json'
+// Named imports only: Vite tree-shakes the rest of site.json (notes, colors) out of the bundle.
+import { brand, domain, year, managers, socials, origin, destinations } from '../content/site.json'
 
 export type Place = { code: string; city: string; lat: number; lng: number }
 export type Manager = { id: string; nameKey: string; phone: string; whatsapp: string; initial: string }
 export type Social = { id: 'instagram' | 'tiktok' | 'threads'; label: string; url: string; handle: string }
 
-export const site = raw as unknown as {
+export const site = { brand, domain, year, managers, socials, origin, destinations } as unknown as {
   brand: string
   domain: string
   year: number
