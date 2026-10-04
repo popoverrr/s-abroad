@@ -37,7 +37,7 @@ function seo(): Plugin {
         let out = html
           .replaceAll('%OG_IMAGE%', og)
           .replace('<!--JSON-LD-->', `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
-        const alt = ['ru', 'kk', 'en', 'cs']
+        const alt = ['ru', 'en', 'kk']
           .map((l) => `<link rel="alternate" hreflang="${l}" href="${url || base}?lang=${l}" />`)
           .join('\n    ')
         out = out.replace('</title>', `</title>\n    ${alt}`)

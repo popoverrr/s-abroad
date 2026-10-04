@@ -61,11 +61,14 @@ function FallbackGlobe() {
   )
 }
 
-export function Globe({ active, className = '' }: { active: number; className?: string }) {
+export function Globe({ active, paused = false, className = '' }: { active: number; paused?: boolean; className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [mode, setMode] = useState<'loading' | 'gl' | 'fallback'>('loading')
   const pulse = useRef({ index: active, t: 0 })
+  // no autorotation while the language gate covers the page
+  const pausedRef = useRef(paused)
+  pausedRef.current = paused
 
   useEffect(() => {
     pulse.current = { index: active, t: performance.now() }
@@ -117,11 +120,11 @@ export function Globe({ active, className = '' }: { active: number; className?: 
 
     const frame = () => {
       raf = requestAnimationFrame(frame)
-      if (!globe || !inView || document.hidden) return
+      if (!globe || !inView || document.hidden || pausedRef.current) return
       const now = performance.now()
       const pulsing = now - pulse.current.t < 700
       if (dragX === null) {
-        if (!reduced) phi += 0.0025
+        if (!reduced && !pausedRef.current) phi += 0.0025
         phi += vel
         vel *= 0.94
         if (Math.abs(vel) < 1e-5) vel = 0

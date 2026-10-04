@@ -7,6 +7,14 @@ let noise: AudioBuffer | null = null
 let lastClick = 0
 let lastTick = 0
 
+// While the language gate is open, the global "unlock on first gesture" listener stands down:
+// the gate creates the context itself, and only when its sound switch is on.
+let unlockHeld = false
+export const holdUnlock = (v: boolean) => {
+  unlockHeld = v
+}
+export const isUnlockHeld = () => unlockHeld
+
 /** The site's shared AudioContext if it already exists (created only by a user gesture); never creates one. */
 export const sharedAudioContext = (): AudioContext | null => ctx
 

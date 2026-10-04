@@ -1872,6 +1872,196 @@ a.manager-phone:hover {
   }
 }
 
+/* ───────────── v5 language gate (docs/08) ───────────── */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 120; /* above everything: chooser 100, toast 90, egg layer 50 */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* the column never grows wider than the screen */
+  place-items: center;
+  padding: 16px;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 20% 0%, var(--field) 0%, var(--field-2) 70%);
+  color: var(--white);
+  transition: transform 450ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+.gate.is-closing {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.gate-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+}
+.gate-logo .logo .mark-s {
+  height: 34px !important;
+}
+.gate-board {
+  margin-top: 22px;
+  height: 48px;
+  max-width: 100%;
+}
+.gate-board .flaps {
+  /* the KZ line needs Ң / І — JetBrains Mono has no Kazakh, IBM Plex Mono does */
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 18px;
+}
+.gate-caption {
+  margin: 14px 0 18px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--on-field-2);
+}
+.gate-langs {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+.gate-lang {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 68px;
+  padding: 0 14px 0 16px;
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 5px 6px 0 var(--ink);
+  text-align: left;
+  transition:
+    background 0.15s,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
+}
+.gate-lang.is-guess,
+.gate-lang:hover,
+.gate.is-kbd .gate-lang:focus-visible {
+  background: var(--lime);
+}
+.gate-lang:focus-visible {
+  outline: none;
+}
+.gate.is-kbd .gate-lang:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+.gate-lang:active {
+  box-shadow: 0 0 0 var(--ink);
+  transform: translate(5px, 6px);
+}
+.gate-code {
+  display: inline-grid;
+  place-items: center;
+  min-width: 40px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--lime);
+  font-family: var(--board-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.gate-name {
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.gate-arrow {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+}
+.gate-lang.is-guess .gate-arrow {
+  background: var(--ink);
+  color: var(--lime);
+}
+.gate-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 22px;
+  padding: 0 8px 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--white);
+}
+.gate-sound .mono {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.gate-sound.is-on .eq i {
+  background: var(--lime);
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+.gate-sound.is-on .eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.gate-sound.is-on .eq i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+.gate-switch {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  background: #3a3a3a;
+  transition: background 0.15s;
+}
+.gate-switch i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--white);
+  transition: transform 0.15s ease;
+}
+.gate-sound.is-on .gate-switch {
+  background: var(--lime);
+}
+.gate-sound.is-on .gate-switch i {
+  transform: translateX(18px);
+}
+.gate-sound:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 3px;
+}
+@media (max-width: 399px) {
+  .gate-lang {
+    height: 64px;
+  }
+  .gate-board {
+    padding: 0 10px;
+  }
+  .gate-board .flaps {
+    font-size: 15.5px;
+  }
+}
+
 /* ───────────── Reduced motion ───────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1885,6 +2075,9 @@ a.manager-phone:hover {
   .route-plane {
     animation: none;
     transform: translateX(calc(50cqw - 50%));
+  }
+  .gate.is-closing {
+    transform: none;
   }
 }
 

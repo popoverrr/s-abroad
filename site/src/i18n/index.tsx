@@ -2,21 +2,22 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import ru from '../content/i18n/ru.json'
 import kk from '../content/i18n/kk.json'
 import en from '../content/i18n/en.json'
-import cs from '../content/i18n/cs.json'
 
 export type Dict = typeof ru
-export const LANGS = ['ru', 'kk', 'en', 'cs'] as const
+// Order = header and language gate order: RU · EN · KZ
+export const LANGS = ['ru', 'en', 'kk'] as const
 export type Lang = (typeof LANGS)[number]
-export const LANG_LABEL: Record<Lang, string> = { ru: 'RU', kk: 'KZ', en: 'EN', cs: 'CZ' }
-export const OG_LOCALE: Record<Lang, string> = { ru: 'ru_RU', kk: 'kk_KZ', en: 'en_US', cs: 'cs_CZ' }
+export const LANG_LABEL: Record<Lang, string> = { ru: 'RU', en: 'EN', kk: 'KZ' }
+export const OG_LOCALE: Record<Lang, string> = { ru: 'ru_RU', en: 'en_US', kk: 'kk_KZ' }
 
 // `satisfies` makes tsc fail when a translation misses a key present in ru.json.
-const DICTS = { ru, kk, en, cs } satisfies Record<Lang, Dict>
+const DICTS = { ru, en, kk } satisfies Record<Lang, Dict>
 const STORE = 'sa-lang'
 
-const isLang = (v: unknown): v is Lang => typeof v === 'string' && (LANGS as readonly string[]).includes(v)
+export const isLang = (v: unknown): v is Lang => typeof v === 'string' && (LANGS as readonly string[]).includes(v)
 
-function detect(): Lang {
+/** Language picked explicitly: valid ?lang= or a saved choice. Anything else (incl. old "cs") → null. */
+function explicitLang(): Lang | null {
   const q = new URLSearchParams(location.search).get('lang')
   if (isLang(q)) return q
   try {
@@ -25,12 +26,16 @@ function detect(): Lang {
   } catch {
     /* storage blocked */
   }
+  return null
+}
+
+/** Best guess from the browser: kk* → kk, en* → en, everything else → ru. */
+export function guessLang(): Lang {
   for (const l of navigator.languages ?? [navigator.language]) {
     const c = l.toLowerCase()
     if (c.startsWith('kk')) return 'kk'
-    if (c.startsWith('cs') || c.startsWith('sk')) return 'cs'
     if (c.startsWith('en')) return 'en'
-    if (c.startsWith('ru') || c.startsWith('uk')) return 'ru'
+    if (c.startsWith('ru')) return 'ru'
   }
   return 'ru'
 }
@@ -51,16 +56,27 @@ function applyDocument(lang: Lang) {
   setMeta('meta[name="twitter:description"]', d.meta.description)
 }
 
-type Ctx = { lang: Lang; t: Dict; setLang: (l: Lang) => void }
+type Ctx = {
+  lang: Lang
+  t: Dict
+  /** true when the visitor picked the language (?lang= or saved); false → the language gate is shown */
+  chosen: boolean
+  setLang: (l: Lang) => void
+}
 const I18nContext = createContext<Ctx | null>(null)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(detect)
+  // Decided synchronously before the first render, so the site never flashes before the gate.
+  const [initial] = useState(() => explicitLang())
+  const [lang, setLangState] = useState<Lang>(() => initial ?? guessLang())
+  const [chosen, setChosen] = useState(initial !== null)
 
   useEffect(() => applyDocument(lang), [lang])
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l)
+    setChosen(true)
+    applyDocument(l)
     try {
       localStorage.setItem(STORE, l)
     } catch {
@@ -68,7 +84,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
     const url = new URL(location.href)
     url.searchParams.set('lang', l)
-    history.replaceState(null, '', url)
+    history.replaceState(history.state, '', url)
     // Short crossfade of translatable text: restart the CSS animation.
     const html = document.documentElement
     html.classList.remove('lang-anim')
@@ -76,7 +92,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     html.classList.add('lang-anim')
   }, [])
 
-  const value = useMemo(() => ({ lang, t: DICTS[lang] as Dict, setLang }), [lang, setLang])
+  const value = useMemo(() => ({ lang, t: DICTS[lang] as Dict, chosen, setLang }), [lang, chosen, setLang])
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>
 }
 

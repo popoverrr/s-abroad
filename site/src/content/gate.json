@@ -1,0 +1,32 @@
+{
+  "_readme": "Тексты экрана выбора языка. Они не зависят от текущего языка сайта, поэтому лежат отдельно от i18n.",
+  "board": [
+    "ВЫБЕРИТЕ ЯЗЫК",
+    "CHOOSE LANGUAGE",
+    "ТІЛДІ ТАҢДАҢЫЗ"
+  ],
+  "caption": "Выберите язык · Choose language · Тілді таңдаңыз",
+  "languages": [
+    {
+      "code": "ru",
+      "label": "RU",
+      "name": "Русский"
+    },
+    {
+      "code": "en",
+      "label": "EN",
+      "name": "English"
+    },
+    {
+      "code": "kk",
+      "label": "KZ",
+      "name": "Қазақша"
+    }
+  ],
+  "sound": {
+    "label": "Звук · Sound · Дыбыс",
+    "aria_on": "Звук включён. Sound on. Дыбыс қосулы",
+    "aria_off": "Звук выключен. Sound off. Дыбыс өшірулі"
+  },
+  "dialog_aria": "Выберите язык / Choose language / Тілді таңдаңыз"
+}

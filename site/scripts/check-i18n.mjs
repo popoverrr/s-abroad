@@ -30,6 +30,6 @@ function walk(a, b, path, lang) {
   }
 }
 
-for (const lang of ['kk', 'en', 'cs']) walk(base, load(lang), '', lang)
+for (const lang of ['en', 'kk']) walk(base, load(lang), '', lang)
 if (errors) process.exit(1)
-console.log('[i18n] ru/kk/en/cs — all keys present')
+console.log('[i18n] ru/en/kk — all keys present')

@@ -86,13 +86,13 @@ for (const view of ['d1280', 'm390', 'm360']) {
   await ctx.close()
 }
 
-// 4. Catch on 4 languages: dialog in egg mode, egg.wa in both links, stamp fits
+// 4. Catch on 3 languages (RU / EN / KZ since v5): dialog in egg mode, egg.wa in both links, stamp fits
 for (const [lang, view] of [
   ['ru', 'd1280'],
   ['ru', 'm390'],
   ['kk', 'm360'],
   ['en', 'd1280'],
-  ['cs', 'm390'],
+  ['en', 'm390'],
 ]) {
   const t = i18n(lang).egg
   const { ctx, page, errors } = await open(view, `lang=${lang}&egg=now`)

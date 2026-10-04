@@ -12,7 +12,8 @@ import { Footer, Grain } from './components/Footer'
 import { StickyCta, Toast } from './components/Overlays'
 import { Chooser, type ChooserVariant } from './components/Chooser'
 import { useSound } from './audio/SoundProvider'
-import { sharedAudioContext } from './audio/sound'
+import { holdUnlock, sharedAudioContext } from './audio/sound'
+import { Gate, shouldShowGate } from './components/Gate'
 import type { PlaneEggHandle } from './egg/plane-egg'
 
 const CITY_MS = 3200
@@ -23,30 +24,41 @@ function randomTime() {
   return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
 }
 
-/** Board cycles destinations every 3.2 s (no intro in v2: everything is usable from the first frame). */
-function useBoard(reduced: boolean) {
+/** Board cycles destinations every 3.2 s; it stands still while the language gate is open. */
+function useBoard(reduced: boolean, paused: boolean) {
   const [index, setIndex] = useState(0)
   const [time, setTime] = useState('09:40')
   useEffect(() => {
-    if (site.destinations.length < 2) return
+    if (paused || site.destinations.length < 2) return
     const id = setInterval(() => {
       if (document.hidden) return
       setIndex((i) => (i + 1) % site.destinations.length)
       setTime(randomTime())
     }, CITY_MS)
     return () => clearInterval(id)
-  }, [])
+  }, [paused])
   return { text: site.destinations[index]?.city ?? '', time, index, animate: !reduced }
 }
 
 export default function App() {
   const reduced = useReducedMotion()
-  const board = useBoard(reduced)
+  const { lang, t, chosen } = useI18n()
+  // Decided synchronously before the first render: no flash of the site before the gate.
+  const [gate, setGate] = useState(() => {
+    const show = shouldShowGate(chosen)
+    holdUnlock(show)
+    return show
+  })
+  const board = useBoard(reduced, gate)
   const [chooser, setChooser] = useState<{ anchor: HTMLElement | null; variant: ChooserVariant } | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef(0)
-  const { lang, t } = useI18n()
   const sound = useSound()
+  const closeGate = useCallback(() => {
+    setGate(false)
+    holdUnlock(false)
+    requestAnimationFrame(() => document.getElementById('main-cta')?.focus({ preventScroll: true }))
+  }, [])
 
   const showToast = useCallback((m: string) => {
     setToast(m)
@@ -60,6 +72,8 @@ export default function App() {
   const live = useRef({ t, soundOn: sound.on, chooserOpen: false })
   live.current = { t, soundOn: sound.on, chooserOpen: !!chooser }
   useEffect(() => {
+    // the 7-second timer starts only after the language gate is closed
+    if (gate) return
     const q = new URLSearchParams(location.search).get('egg')
     let egg: PlaneEggHandle | null = null
     let cancelled = false
@@ -88,15 +102,15 @@ export default function App() {
       cancelled = true
       egg?.destroy()
     }
-  }, [])
+  }, [gate])
 
   return (
     <div className="page" data-lang={lang}>
       <Grain />
-      <Globe active={board.index} className="page-globe" />
-      <div className="shell">
+      <Globe active={board.index} paused={gate} className="page-globe" />
+      <div className="shell" inert={gate} aria-hidden={gate || undefined}>
         <TopBar />
-        <main className="main">
+        <main className="main" inert={gate}>
           <section className="area-hero">
             <Hero />
           </section>
@@ -115,6 +129,7 @@ export default function App() {
       <StickyCta onChoose={openChooser} />
       <Chooser open={!!chooser} anchor={chooser?.anchor ?? null} variant={chooser?.variant} onClose={closeChooser} />
       <Toast message={toast} />
+      {gate && <Gate onDone={closeGate} />}
     </div>
   )
 }
