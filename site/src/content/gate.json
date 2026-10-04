@@ -23,10 +23,5 @@
       "name": "Қазақша"
     }
   ],
-  "sound": {
-    "label": "Звук · Sound · Дыбыс",
-    "aria_on": "Звук включён. Sound on. Дыбыс қосулы",
-    "aria_off": "Звук выключен. Sound off. Дыбыс өшірулі"
-  },
   "dialog_aria": "Выберите язык / Choose language / Тілді таңдаңыз"
 }

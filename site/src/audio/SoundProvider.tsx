@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { dingDong, ensureAudio, flapClick, hoverTick, isUnlockHeld, sharedAudioContext, thud } from './sound'
 
-const KEY = 'sa-sound'
 type Ctx = {
   on: boolean
   toggle: () => void
@@ -13,20 +12,11 @@ type Ctx = {
 }
 const SoundContext = createContext<Ctx | null>(null)
 
-/** Sound is ON by default (v5); only an explicit "off" is remembered and respected. */
-function readStored() {
-  try {
-    return localStorage.getItem(KEY) !== 'off'
-  } catch {
-    return true
-  }
-}
-function store(on: boolean) {
-  try {
-    localStorage.setItem(KEY, on ? 'on' : 'off')
-  } catch {
-    /* storage blocked */
-  }
+// v6: sound is ALWAYS on at page load. Turning it off (header button) lasts until reload only — nothing is stored.
+try {
+  localStorage.removeItem('sa-sound') // key from v5, no longer used
+} catch {
+  /* storage blocked */
 }
 
 /** Create/resume inside the current user gesture, then chime once the context actually runs. */
@@ -38,29 +28,35 @@ function startWithChime() {
 }
 
 export function SoundProvider({ children }: { children: ReactNode }) {
-  // A remembered "on" still needs a gesture: browsers block audio until the first user action.
-  const [on, setOn] = useState(readStored)
+  // Browsers still block audio until the first user action: the language gate click (or the first touch) unlocks it.
+  const [on, setOn] = useState(true)
   const onRef = useRef(on)
   onRef.current = on
 
-  // Returning visitor: unlock on the first gesture anywhere (capture), silently — no welcome chime.
-  // While the language gate is open it handles audio itself (its sound switch must not create a context).
+  // Every gesture (capture) creates/resumes the one shared AudioContext while sound is on — covers ?lang= visits
+  // without the gate and contexts that iOS left "suspended"/"interrupted". Returning to the tab resumes it too.
+  // No welcome chime here. While the language gate is open it handles audio itself.
   useEffect(() => {
-    if (!on) return
     const evs = ['pointerdown', 'keydown', 'touchend'] as const
-    const unlock = () => {
-      if (isUnlockHeld()) return
-      const c = ensureAudio()
-      if (c && c.state === 'running') remove()
-      else void c?.resume().then(() => c.state === 'running' && remove())
+    const wake = () => {
+      if (!onRef.current || isUnlockHeld()) return
+      ensureAudio() // creates the context on the first gesture, resume()s it afterwards
     }
-    const remove = () => evs.forEach((e) => window.removeEventListener(e, unlock, true))
-    evs.forEach((e) => window.addEventListener(e, unlock, true))
-    return remove
-  }, [on])
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible' || !onRef.current) return
+      const c = sharedAudioContext()
+      if (c && c.state !== 'running') void c.resume().catch(() => {})
+    }
+    evs.forEach((e) => window.addEventListener(e, wake, true))
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      evs.forEach((e) => window.removeEventListener(e, wake, true))
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [])
 
   const set = useCallback((next: boolean, opts: { chime?: boolean } = {}) => {
-    store(next)
+    onRef.current = next
     setOn(next)
     if (next && opts.chime) startWithChime()
   }, [])
@@ -81,6 +77,17 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     }),
     [on, toggle, set],
   )
+
+  // Test hook (docs/09 acceptance): the shared AudioContext state (never creates one) + the on/off switch.
+  useEffect(() => {
+    ;(window as unknown as { __audioState?: () => { state: string; enabled: boolean } }).__audioState = () => ({
+      state: sharedAudioContext()?.state ?? 'none',
+      enabled: onRef.current,
+    })
+    // emulates the OS suspending audio while the tab is in the background
+    ;(window as unknown as { __audioSuspend?: () => Promise<void> | undefined }).__audioSuspend = () => sharedAudioContext()?.suspend()
+  }, [])
+
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>
 }
 
@@ -89,6 +96,3 @@ export function useSound() {
   if (!c) throw new Error('useSound outside provider')
   return c
 }
-
-// Test hook (docs/08 acceptance): state of the shared AudioContext without creating one.
-;(window as unknown as { __audioState?: () => string }).__audioState = () => sharedAudioContext()?.state ?? 'none'

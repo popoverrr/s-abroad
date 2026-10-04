@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState, type KeyboardEvent as RKE } from 'react'
 import gate from '../content/gate.json'
-import { guessLang, isLang, useI18n, type Lang } from '../i18n'
+import { guessLang, isLang, savedLang, useI18n, type Lang } from '../i18n'
 import { useSound } from '../audio/SoundProvider'
 import { holdUnlock } from '../audio/sound'
 import { prefersReducedMotion, useMedia } from '../lib/motion'
@@ -13,7 +13,7 @@ const BOARD_LEN = Math.max(...BOARD.map((s) => s.length))
 const LANGS = gate.languages.filter((l) => isLang(l.code)) as { code: Lang; label: string; name: string }[]
 const CLOSE_MS = 450
 
-/** Show the gate when no language was picked explicitly; ?gate=1 forces it, ?og=1 never shows it. */
+/** v6: the gate is shown on EVERY load (the click unlocks sound); only ?og=1 and an explicit ?lang= skip it. ?gate=1 forces it. */
 export function shouldShowGate(chosen: boolean): boolean {
   const q = new URLSearchParams(location.search)
   if (q.has('og')) return false
@@ -36,8 +36,8 @@ function Arrow() {
 export function Gate({ onDone }: { onDone: () => void }) {
   const { setLang } = useI18n()
   const sound = useSound()
-  const [guess] = useState(guessLang)
-  const [soundOn, setSoundOn] = useState(sound.on)
+  // the language from the previous visit is pre-selected; otherwise the browser's
+  const [guess] = useState(() => savedLang() ?? guessLang())
   const [closing, setClosing] = useState(false)
   const [idx, setIdx] = useState(0)
   // focus ring only for keyboard users: the guessed button gets focus programmatically on load
@@ -60,11 +60,11 @@ export function Gate({ onDone }: { onDone: () => void }) {
 
   const choose = (code: Lang) => {
     if (closing) return
-    // 1. audio inside the gesture — only when the switch is on (off → no AudioContext at all)
+    // 1–3. sound ON unconditionally: AudioContext created + resumed right here, inside the gesture (iOS), then the chime
     holdUnlock(false)
-    // 2–4. language, sound state, chime
+    sound.set(true, { chime: true })
+    // 4. language
     setLang(code)
-    sound.set(soundOn, { chime: soundOn })
     // 5–7. close
     if (reduced) return onDone()
     setClosing(true)
@@ -135,24 +135,6 @@ export function Gate({ onDone }: { onDone: () => void }) {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={soundOn}
-          aria-label={soundOn ? gate.sound.aria_on : gate.sound.aria_off}
-          className={`gate-sound ${soundOn ? 'is-on' : ''}`}
-          onClick={() => setSoundOn((v) => !v)}
-        >
-          <span className="eq" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <span className="mono">{gate.sound.label}</span>
-          <span className="gate-switch" aria-hidden="true">
-            <i />
-          </span>
-        </button>
       </div>
     </div>
   )

@@ -20,7 +20,8 @@ export const sharedAudioContext = (): AudioContext | null => ctx
 
 export function ensureAudio(): AudioContext | null {
   if (ctx) {
-    if (ctx.state === 'suspended') void ctx.resume()
+    // iOS may leave the context 'suspended' or 'interrupted' (calls, tab switches) — wake it on every gesture
+    if (ctx.state !== 'running' && ctx.state !== 'closed') void ctx.resume().catch(() => {})
     return ctx
   }
   const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext

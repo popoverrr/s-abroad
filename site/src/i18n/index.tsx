@@ -16,17 +16,20 @@ const STORE = 'sa-lang'
 
 export const isLang = (v: unknown): v is Lang => typeof v === 'string' && (LANGS as readonly string[]).includes(v)
 
-/** Language picked explicitly: valid ?lang= or a saved choice. Anything else (incl. old "cs") → null. */
-function explicitLang(): Lang | null {
+/** Explicit ?lang=ru|en|kk in the address (direct links, tests) — the only case that skips the language gate. */
+export function urlLang(): Lang | null {
   const q = new URLSearchParams(location.search).get('lang')
-  if (isLang(q)) return q
+  return isLang(q) ? q : null
+}
+
+/** Language saved by an earlier visit (old "cs" and anything invalid → null). */
+export function savedLang(): Lang | null {
   try {
     const s = localStorage.getItem(STORE)
-    if (isLang(s)) return s
+    return isLang(s) ? s : null
   } catch {
-    /* storage blocked */
+    return null
   }
-  return null
 }
 
 /** Best guess from the browser: kk* → kk, en* → en, everything else → ru. */
@@ -59,7 +62,7 @@ function applyDocument(lang: Lang) {
 type Ctx = {
   lang: Lang
   t: Dict
-  /** true when the visitor picked the language (?lang= or saved); false → the language gate is shown */
+  /** true when ?lang= is in the address; otherwise the language gate is shown on every load (v6) */
   chosen: boolean
   setLang: (l: Lang) => void
 }
@@ -67,8 +70,8 @@ const I18nContext = createContext<Ctx | null>(null)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   // Decided synchronously before the first render, so the site never flashes before the gate.
-  const [initial] = useState(() => explicitLang())
-  const [lang, setLangState] = useState<Lang>(() => initial ?? guessLang())
+  const [initial] = useState(() => urlLang())
+  const [lang, setLangState] = useState<Lang>(() => initial ?? savedLang() ?? guessLang())
   const [chosen, setChosen] = useState(initial !== null)
 
   useEffect(() => applyDocument(lang), [lang])
@@ -82,9 +85,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     } catch {
       /* storage blocked */
     }
+    // v6: the language lives in localStorage only. A ?lang= in the address would hide the gate on reload
+    // (and with it the click that unlocks sound), so drop it once the visitor switches language.
     const url = new URL(location.href)
-    url.searchParams.set('lang', l)
-    history.replaceState(history.state, '', url)
+    if (url.searchParams.has('lang')) {
+      url.searchParams.delete('lang')
+      history.replaceState(history.state, '', url)
+    }
     // Short crossfade of translatable text: restart the CSS animation.
     const html = document.documentElement
     html.classList.remove('lang-anim')
