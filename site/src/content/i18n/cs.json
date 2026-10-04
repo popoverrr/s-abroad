@@ -26,5 +26,6 @@
   ],
   "stub": { "scan": "Naskenuj a otevři v telefonu", "save_contact": "Uložit kontakt", "share": "Sdílet", "copied": "Odkaz zkopírován" },
   "wa": { "default": "Dobrý den, {name}! Mám zájem o konzultaci zdarma ke studiu v zahraničí." },
-  "footer": { "left": "Study & travel abroad" }
+  "footer": { "left": "Study & travel abroad" },
+  "egg": {"catch_aria": "Chytit letadlo", "stamp": "Chyceno", "badge": "Tajemství odhaleno", "title": "Letadlo chyceno!", "sub": "Je tedy čas letět. Napište manažerovi — pomůžeme vybrat zemi a univerzitu.", "wa": "Dobrý den, {name}! Chytil(a) jsem letadélko na vašem webu ✈ Mám zájem o konzultaci ke studiu v zahraničí."}
 }

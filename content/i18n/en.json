@@ -26,5 +26,6 @@
   ],
   "stub": { "scan": "Scan to open on your phone", "save_contact": "Save contact", "share": "Share", "copied": "Link copied" },
   "wa": { "default": "Hello, {name}! I'd like a free consultation about studying abroad." },
-  "footer": { "left": "Study & travel abroad" }
+  "footer": { "left": "Study & travel abroad" },
+  "egg": {"catch_aria": "Catch the plane", "stamp": "Caught", "badge": "Easter egg found", "title": "Plane caught!", "sub": "So it's time to fly. Message a manager — we'll help you pick a country and a university.", "wa": "Hello, {name}! I caught the paper plane on your site ✈ I'd like a consultation about studying abroad."}
 }

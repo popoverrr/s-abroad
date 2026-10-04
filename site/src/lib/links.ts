@@ -18,7 +18,8 @@ function managerName(t: Dict, m: Manager) {
   return t.managers[key] ?? m.id
 }
 
-export function managers(t: Dict): ResolvedManager[] {
+/** `template` — WhatsApp message with {name}; defaults to wa.default (the easter egg passes egg.wa). */
+export function managers(t: Dict, template: string = t.wa.default): ResolvedManager[] {
   return site.managers
     .filter((m) => !(isEmpty(m.whatsapp) && isEmpty(m.phone)))
     .map((m) => {
@@ -26,7 +27,7 @@ export function managers(t: Dict): ResolvedManager[] {
       const waNum = isEmpty(m.whatsapp) ? m.phone : m.whatsapp
       const wa = isTodo(waNum)
         ? { href: '#todo', todo: true }
-        : { href: `https://wa.me/${digits(waNum)}?text=${encodeURIComponent(fill(t.wa.default, name))}`, todo: false }
+        : { href: `https://wa.me/${digits(waNum)}?text=${encodeURIComponent(fill(template, name))}`, todo: false }
       const tel = isEmpty(m.phone) ? null : isTodo(m.phone) ? { href: '#todo', todo: true } : { href: `tel:+${digits(m.phone)}`, todo: false }
       return { id: m.id, name, initial: m.initial || name[0], phoneLabel: isTodo(m.phone) || isEmpty(m.phone) ? '' : formatPhone(m.phone), wa, tel }
     })

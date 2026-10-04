@@ -1,0 +1,69 @@
+<!doctype html><title>Демо пасхалки — фон условный</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#00754A;--bg2:#00643F;--line:#0A8F5C;--panel:#04140D;--lime:#D2FF3A;--pink:#FF3D7F;--violet:#6A4DFF;--orange:#FF7A1A;--ink:#0B0B0B;--white:#fff}
+*{box-sizing:border-box;margin:0}body{background:radial-gradient(120% 90% at 20% 0%,var(--bg) 0%,var(--bg2) 70%);color:#fff;font-family:Inter,Arial,sans-serif;min-height:100vh;padding:28px 40px;overflow:hidden;position:relative}
+.mono{font-family:"DejaVu Sans Mono",monospace;letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+.top{display:flex;justify-content:space-between;align-items:center}.logo{font-weight:800;letter-spacing:.04em}.langs span{margin-left:14px;opacity:.6}.langs .on{opacity:1;border-bottom:3px solid var(--lime)}
+.grid{display:grid;grid-template-columns:1.25fr 440px;gap:40px;align-items:center;margin-top:30px}
+h1{font-size:92px;line-height:.92;font-weight:900;letter-spacing:-.03em}h1 i{color:var(--lime);font-style:normal}
+.eyebrow{display:flex;gap:8px;align-items:center;margin-bottom:14px}.eyebrow b{width:10px;height:10px;border-radius:50%;background:var(--lime)}
+.sub{margin:18px 0;font-size:17px;font-weight:500}.sub em{color:var(--lime);font-style:normal}
+.board{display:inline-flex;gap:14px;align-items:center;background:var(--panel);border-radius:14px;padding:10px 16px;font-family:"DejaVu Sans Mono",monospace;font-weight:700}
+.flap{display:inline-block;background:#1b1b1b;color:var(--lime);padding:4px 5px;margin-right:2px;border-radius:3px}.pl{color:var(--pink)}
+.stamps{display:flex;gap:22px;margin-top:26px}.st{width:104px;text-align:center;font-size:13px;font-weight:600}.st div{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;color:var(--ink);font-size:30px;margin-bottom:8px;box-shadow:inset 0 0 0 4px var(--ink),inset 0 0 0 9px currentColor;outline:0}
+.globe{position:absolute;left:22%;bottom:-420px;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(210,255,58,.28),transparent 60%),repeating-radial-gradient(circle,rgba(210,255,58,.35) 0 1.5px,transparent 1.5px 9px);opacity:.55;z-index:0}
+.grid,.top{position:relative;z-index:1}
+.pass{background:#fff;color:var(--ink);border-radius:26px;padding:20px;border:2px solid var(--ink);box-shadow:10px 12px 0 var(--ink)}
+.pass .mono{color:#555}.row{display:flex;justify-content:space-between;align-items:center}
+.route{font-size:34px;font-weight:900;margin:8px 0 12px}.route span{color:var(--pink)}
+.cta{display:flex;gap:12px;align-items:center;background:var(--lime);border:2px solid var(--ink);border-radius:16px;padding:14px 18px;font-weight:800;font-size:19px;box-shadow:4px 5px 0 var(--ink)}.cta small{display:block;font-weight:600;font-size:12px}
+.cta .ic{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-size:14px}
+.mg{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1.5px solid #e8e8e8}.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff}
+.mg b{font-size:17px}.mg small{display:block;color:#555}.sp{flex:1}.rb{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800}.wa{background:var(--ink);color:var(--lime)}.tel{border:2px solid var(--ink)}
+.soc{display:flex;gap:8px;margin:8px 0 14px}.soc span{flex:1;text-align:center;border:2px solid var(--ink);border-radius:999px;padding:9px 0;font-weight:700;font-size:14px}
+.perf{border-top:2px dashed var(--ink);margin:0 -20px 14px;position:relative}.perf:before,.perf:after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--bg2);border:2px solid var(--ink)}.perf:before{left:-14px}.perf:after{right:-14px}
+.stub{display:flex;gap:14px;align-items:center}.qr{width:84px;height:84px;background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/14px 14px;border:2px solid var(--ink)}
+.lbl{margin:14px 0 4px}
+@media(max-width:700px){body{padding:16px}.grid{grid-template-columns:1fr;gap:16px;margin-top:14px}h1{font-size:46px}.stamps{gap:8px;justify-content:space-between}.st,.st div{width:76px}.st div{height:76px;font-size:22px}.globe{left:30%;top:40px;bottom:auto;width:420px;height:420px}.route{display:none}.pass{box-shadow:6px 8px 0 var(--ink)}}
+#sheet{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;background:#fff;color:#0B0B0B;border:2px solid #0B0B0B;border-radius:22px;box-shadow:8px 10px 0 #0B0B0B;padding:22px;width:min(360px,90vw);display:none}#sheet.on{display:block}#sheet .badge{display:inline-block;background:var(--lime);border:2px solid #0B0B0B;border-radius:999px;padding:3px 10px;font:700 11px monospace;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}#sheet h3{font-size:24px;font-weight:900;margin-bottom:6px}#sheet p{color:#4A4A4A;margin-bottom:12px}
+</style>
+<link rel=stylesheet href="plane-egg.css">
+<div class=globe></div>
+<div class=top><div class=logo>S ABROAD</div><div class="langs mono"><span class=on>RU</span><span>KZ</span><span>EN</span><span>CZ</span></div></div>
+<div class=grid><div>
+<div class="eyebrow mono"><b></b>Образовательное агентство</div>
+<h1>Мир —<br>твой кампус<i>.</i></h1>
+<p class=sub>Поступление в топ-вузы <em>·</em> Языковые курсы <em>·</em> Каникулы <em>·</em> Визы</p>
+<div class=board>ALMATY <span class=pl>✈</span> <span><span class=flap>P</span><span class=flap>R</span><span class=flap>A</span><span class=flap>H</span><span class=flap>A</span></span> <span style="color:var(--lime)">09:40</span></div>
+<div class=stamps>
+<div class=st><div style="background:var(--lime)">🎓</div>Поступление</div>
+<div class=st><div style="background:var(--pink)">💬</div>Языки</div>
+<div class=st><div style="background:var(--orange)">🧳</div>Каникулы</div>
+<div class=st><div style="background:var(--violet);color:#fff">🛂</div>Визы</div>
+</div></div>
+<div class=pass id=pass>
+<div class="row mono"><span>Посадочный талон</span><span>S ABROAD</span></div>
+<div class="row route">ALA <span>✈</span> EUR</div>
+<div class=cta id=cta><span class=ic>WA</span><span>Написать в WhatsApp<small>Консультация бесплатно</small></span></div>
+<div class="mono lbl">Менеджеры</div>
+<div class=mg><span class=av style="background:var(--pink)">R</span><span><b>Рамиль</b><small>+7 707 585 87 47</small></span><span class=sp></span><span class="rb wa">WA</span><span class="rb tel">☎</span></div>
+<div class=mg><span class=av style="background:var(--violet)">G</span><span><b>Гайнель</b><small>+7 701 800 90 45</small></span><span class=sp></span><span class="rb wa">WA</span><span class="rb tel">☎</span></div>
+<div class="mono lbl">Мы в соцсетях</div>
+<div class=soc><span>Instagram</span><span>TikTok</span><span>Threads</span></div>
+<div class=perf></div>
+<div class=stub><div class=qr></div><div><div class=soc style="margin:0"><span style="padding:9px 14px">Сохранить контакт</span></div></div></div>
+</div></div>
+
+<button id=again style="position:fixed;left:16px;bottom:16px;z-index:90;font:700 13px monospace;padding:10px 14px;border:2px solid #0B0B0B;border-radius:999px;background:#D2FF3A;cursor:pointer">✈ Запустить ещё раз (со звуком)</button>
+<div id=sheet><span class=badge>✈ Пасхалка найдена</span><h3>Самолёт пойман!</h3><p>Значит, пора лететь. Напишите менеджеру — подберём страну и вуз.</p>
+<div class=mg><span class=av style="background:var(--pink);color:#0B0B0B">R</span><span><b>Рамиль</b><small>+7 707 585 87 47</small></span><span class=sp></span><span class="rb wa">WA</span></div>
+<div class=mg><span class=av style="background:var(--violet)">G</span><span><b>Гайнель</b><small>+7 701 800 90 45</small></span><span class=sp></span><span class="rb wa">WA</span></div></div>
+<script src="egg.js"></script>
+<script>
+const q=new URLSearchParams(location.search);
+window.__egg=Egg.initPlaneEgg({firstDelayMs:+(q.get('d')||7000),repeatEveryMs:12000,maxPasses:9,soundEnabled:()=>true,getAudioContext:()=>window.__ac||null,
+ avoid:()=>[document.getElementById('pass'),document.getElementById('cta')],
+ labels:{catchAria:'Поймать самолётик',stamp:'Пойман'},
+ onCatch:()=>document.getElementById('sheet').classList.add('on')});
+addEventListener('pointerdown',()=>{if(!window.__ac){const A=window.AudioContext||window.webkitAudioContext;window.__ac=new A()}else window.__ac.resume()},{capture:true});document.getElementById('again').onclick=()=>{document.getElementById('sheet').classList.remove('on');window.__egg.launchNow()};document.getElementById('sheet').onclick=()=>document.getElementById('sheet').classList.remove('on');
+</script>

@@ -1,0 +1,167 @@
+/* S ABROAD — пасхалка «поймай самолётик». Слой поверх страницы, клики пропускает. */
+.egg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* выше контента и sticky-CTA, НИЖЕ диалога выбора менеджера и toast */
+  pointer-events: none;
+  overflow: hidden;
+  contain: layout style;
+}
+.egg-helper {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* самолётик = кнопка; зона попадания больше картинки */
+.egg-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 79px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate(-200px, -200px);
+  will-change: transform;
+}
+.egg-plane::before {
+  /* невидимое расширение зоны попадания: по самолётику легко попасть пальцем */
+  content: '';
+  position: absolute;
+  inset: -18px -14px;
+  border-radius: 50%;
+}
+.egg-plane-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.egg-plane-shadow {
+  transform: translate(var(--egg-sx, 6px), var(--egg-sy, 9px));
+}
+.egg-plane:hover .egg-plane-body,
+.egg-plane:focus-visible .egg-plane-body {
+  transform: scale(1.12);
+  transform-origin: 60px 40px;
+}
+.egg-plane-body {
+  transition: transform 0.12s ease-out;
+}
+.egg-plane:focus-visible {
+  outline: 3px solid var(--lime, #d2ff3a);
+  outline-offset: 6px;
+  border-radius: 12px;
+}
+
+/* статичный вариант для prefers-reduced-motion */
+.egg-plane--parked {
+  left: auto;
+  top: auto;
+  right: 14px;
+  bottom: calc(14px + var(--sticky-h, 0px) + env(safe-area-inset-bottom, 0px));
+  transform: rotate(-18deg);
+  will-change: auto;
+}
+
+/* пунктирный след — как линия маршрута на талоне */
+.egg-dash {
+  position: absolute;
+  left: -5px;
+  top: -1.5px;
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+  background: #fff;
+  pointer-events: none;
+}
+.egg-dash--lime {
+  background: var(--lime, #d2ff3a);
+}
+.egg-dash--pink {
+  background: #0b0b0b;
+}
+
+/* конфетти из обрывков талона */
+.egg-bit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  border: 2px solid #0b0b0b;
+  box-sizing: border-box;
+}
+.egg-bit--ticket {
+  width: 18px;
+  height: 11px;
+  border-radius: 3px;
+}
+.egg-bit--dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.egg-bit--star {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%);
+}
+
+/* штамп «ПОЙМАН» — в стиле штампов-наклеек сайта */
+.egg-stamp {
+  position: absolute;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: var(--lime, #d2ff3a);
+  border: 4px solid #0b0b0b;
+  box-shadow: 4px 5px 0 #0b0b0b;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+}
+.egg-stamp-ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1.5px dashed #0b0b0b;
+}
+.egg-stamp-text {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0b0b0b;
+  border-top: 2px solid #0b0b0b;
+  border-bottom: 2px solid #0b0b0b;
+  padding: 3px 0;
+  max-width: 88px;
+  text-align: center;
+  line-height: 1.05;
+}
+
+@media (max-width: 767px) {
+  .egg-plane {
+    width: 78px;
+    height: 61px;
+  }
+  .egg-stamp {
+    width: 92px;
+    height: 92px;
+  }
+  .egg-stamp-text {
+    font-size: 13px;
+    max-width: 78px;
+  }
+}

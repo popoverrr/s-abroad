@@ -7,6 +7,9 @@ let noise: AudioBuffer | null = null
 let lastClick = 0
 let lastTick = 0
 
+/** The site's shared AudioContext if it already exists (created only by a user gesture); never creates one. */
+export const sharedAudioContext = (): AudioContext | null => ctx
+
 export function ensureAudio(): AudioContext | null {
   if (ctx) {
     if (ctx.state === 'suspended') void ctx.resume()

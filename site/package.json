@@ -14,7 +14,9 @@
     "shots": "node scripts/shots.mjs",
     "check": "node scripts/check.mjs",
     "deploy": "npm run build && node scripts/deploy-ftp.mjs",
-    "deploy:dry": "node scripts/deploy-ftp.mjs --dry-run"
+    "deploy:dry": "node scripts/deploy-ftp.mjs --dry-run",
+    "check:egg": "node scripts/egg-test.mjs",
+    "check:colors": "node scripts/check-colors.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.3.0",

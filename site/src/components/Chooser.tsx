@@ -4,15 +4,20 @@ import { useI18n } from '../i18n'
 import { anchorProps, managers } from '../lib/links'
 import { useMedia } from '../lib/motion'
 import { WaIcon } from './Icons'
+import planeWhite from '../egg/plane-white.svg?raw'
+
+export type ChooserVariant = 'default' | 'egg'
 
 /**
  * Manager picker for the main WhatsApp button.
  * Mobile: bottom sheet (swipe down / tap backdrop / Esc / Android back). Desktop: popover under (or above) the button.
+ * variant 'egg' (paper-plane easter egg): own header and WhatsApp text; on desktop a centred modal instead of a popover.
  */
-export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClose: () => void }) {
+export function Chooser({ open, anchor, variant = 'default', onClose }: { open: boolean; anchor: HTMLElement | null; variant?: ChooserVariant; onClose: () => void }) {
   const { t } = useI18n()
-  const open = !!anchor
   const sheet = !useMedia('(min-width: 768px)')
+  const egg = variant === 'egg'
+  const centred = egg && !sheet
   const boxRef = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null)
   const [drag, setDrag] = useState(0)
@@ -66,7 +71,7 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
 
   // Desktop popover: under the button, or above it when there is no room.
   useLayoutEffect(() => {
-    if (!open || sheet || !anchor) return setPos(null)
+    if (!open || sheet || centred || !anchor) return setPos(null)
     const place = () => {
       const r = anchor.getBoundingClientRect()
       const h = boxRef.current?.offsetHeight ?? 220
@@ -80,7 +85,7 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
       window.removeEventListener('resize', place)
       window.removeEventListener('scroll', place, true)
     }
-  }, [open, sheet, anchor])
+  }, [open, sheet, centred, anchor])
 
   useEffect(() => setDrag(0), [open])
 
@@ -98,9 +103,9 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
     else setDrag(0)
   }
 
-  const list = managers(t)
+  const list = managers(t, egg ? t.egg.wa : t.wa.default)
   return createPortal(
-    <div className={`chooser ${sheet ? 'chooser--sheet' : 'chooser--pop'}`}>
+    <div className={`chooser ${sheet ? 'chooser--sheet' : centred ? 'chooser--center' : 'chooser--pop'} ${egg ? 'chooser--egg' : ''}`}>
       <div className="chooser-backdrop" onClick={onClose} />
       <div
         className="chooser-box"
@@ -108,7 +113,7 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
         aria-modal="true"
         aria-labelledby="chooser-title"
         ref={boxRef}
-        style={sheet ? { transform: drag ? `translateY(${drag}px)` : undefined } : pos ? { left: pos.left, top: pos.top, width: pos.width } : { visibility: 'hidden' }}
+        style={sheet ? { transform: drag ? `translateY(${drag}px)` : undefined } : centred ? undefined : pos ? { left: pos.left, top: pos.top, width: pos.width } : { visibility: 'hidden' }}
       >
         {sheet && (
           <div className="chooser-grip" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
@@ -116,10 +121,16 @@ export function Chooser({ anchor, onClose }: { anchor: HTMLElement | null; onClo
           </div>
         )}
         <div className="chooser-head" onPointerDown={sheet ? onDown : undefined} onPointerMove={sheet ? onMove : undefined} onPointerUp={sheet ? onUp : undefined}>
+          {egg && (
+            <p className="egg-badge mono">
+              <span className="egg-badge-plane" aria-hidden="true" dangerouslySetInnerHTML={{ __html: planeWhite }} />
+              {t.egg.badge}
+            </p>
+          )}
           <p id="chooser-title" className="chooser-title">
-            {t.chooser.title}
+            {egg ? t.egg.title : t.chooser.title}
           </p>
-          <p className="chooser-sub">{t.chooser.sub}</p>
+          <p className="chooser-sub">{egg ? t.egg.sub : t.chooser.sub}</p>
         </div>
         <ul className="chooser-list">
           {list.map((m) => (

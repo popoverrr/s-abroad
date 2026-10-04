@@ -1,0 +1,35 @@
+{
+  "_readme": "Добавить ключ \"egg\" в каждый content/i18n/<lang>.json (и в копию в src/content). Существующие ключи не трогать.",
+  "ru": { "egg": {
+    "catch_aria": "Поймать самолётик",
+    "stamp": "Пойман",
+    "badge": "Пасхалка найдена",
+    "title": "Самолёт пойман!",
+    "sub": "Значит, пора лететь. Напишите менеджеру — подберём страну и вуз.",
+    "wa": "Здравствуйте, {name}! Я поймал самолётик на вашем сайте ✈ Хочу консультацию по обучению за рубежом."
+  } },
+  "kk": { "egg": {
+    "catch_aria": "Ұшақты ұстау",
+    "stamp": "Ұсталды",
+    "badge": "Құпия табылды",
+    "title": "Ұшақ ұсталды!",
+    "sub": "Демек, ұшатын уақыт келді. Менеджерге жазыңыз — ел мен университетті таңдап береміз.",
+    "wa": "Сәлеметсіз бе, {name}! Сайтыңыздан ұшақты ұстап алдым ✈ Шетелде оқу бойынша кеңес алғым келеді."
+  } },
+  "en": { "egg": {
+    "catch_aria": "Catch the plane",
+    "stamp": "Caught",
+    "badge": "Easter egg found",
+    "title": "Plane caught!",
+    "sub": "So it's time to fly. Message a manager — we'll help you pick a country and a university.",
+    "wa": "Hello, {name}! I caught the paper plane on your site ✈ I'd like a consultation about studying abroad."
+  } },
+  "cs": { "egg": {
+    "catch_aria": "Chytit letadlo",
+    "stamp": "Chyceno",
+    "badge": "Tajemství odhaleno",
+    "title": "Letadlo chyceno!",
+    "sub": "Je tedy čas letět. Napište manažerovi — pomůžeme vybrat zemi a univerzitu.",
+    "wa": "Dobrý den, {name}! Chytil(a) jsem letadélko na vašem webu ✈ Mám zájem o konzultaci ke studiu v zahraničí."
+  } }
+}
