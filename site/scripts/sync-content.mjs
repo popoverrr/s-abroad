@@ -19,5 +19,8 @@ if (existsSync(join(assets, 'brand'))) {
   copyFileSync(join(assets, 'favicon.svg'), join(root, 'public', 'favicon.svg'))
   // v1 placeholder mark is gone for good.
   rmSync(join(root, 'src', 'assets', 'mark.svg'), { force: true })
+  // manager photos (v7)
+  const team = join(assets, 'team')
+  if (existsSync(team)) cpSync(team, join(root, 'src', 'assets', 'team'), { recursive: true })
   console.log('[sync] assets/brand/*.svg → src/assets/brand/, favicon.svg → public/')
 }

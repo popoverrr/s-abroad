@@ -7,6 +7,8 @@ import { useMedia, useReducedMotion } from '../lib/motion'
 import { MarkS } from './Brand'
 import { PhoneIcon, Plane, SOCIAL_ICON, WaIcon } from './Icons'
 import { Stub } from './Stub'
+import { Avatar } from './Avatar'
+
 
 function MiniRoute() {
   return (
@@ -24,6 +26,8 @@ function MiniRoute() {
 
 function Managers() {
   const { t } = useI18n()
+  // 56px in the pass, 52px on 360px phones (keeps the v2 first-screen budget)
+  const size = useMedia('(max-width: 379px)') ? 52 : 56
   return (
     <section className="managers" aria-labelledby="managers-title">
       <p id="managers-title" className="label mono">
@@ -32,9 +36,7 @@ function Managers() {
       <ul>
         {managers(t).map((mg) => (
           <li key={mg.id} className="manager">
-            <span className={`avatar avatar--${mg.id}`} aria-hidden="true">
-              {mg.initial}
-            </span>
+            <Avatar id={mg.id} photo={mg.photo} initial={mg.initial} name={mg.name} size={size} />
             <span className="manager-text">
               <b>{mg.name}</b>
               {mg.tel && mg.phoneLabel ? (

@@ -4,6 +4,7 @@ import { useI18n } from '../i18n'
 import { anchorProps, managers } from '../lib/links'
 import { useMedia } from '../lib/motion'
 import { WaIcon } from './Icons'
+import { Avatar } from './Avatar'
 import planeWhite from '../egg/plane-white.svg?raw'
 
 export type ChooserVariant = 'default' | 'egg'
@@ -140,9 +141,7 @@ export function Chooser({ open, anchor, variant = 'default', onClose }: { open: 
                   leaving.current = true
                   setTimeout(onClose, 50)
                 }}>
-                <span className={`avatar avatar--${m.id}`} aria-hidden="true">
-                  {m.initial}
-                </span>
+                <Avatar id={m.id} photo={m.photo} initial={m.initial} name={m.name} size={64} lazy />
                 <span className="pick-text">
                   <b>{m.name}</b>
                   {m.phoneLabel && <small>{m.phoneLabel}</small>}

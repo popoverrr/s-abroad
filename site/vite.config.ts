@@ -60,6 +60,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), seo()],
   build: {
     target: 'es2022',
+    // manager photos are always separate files (never base64 inside the JS chunk)
+    assetsInlineLimit: (file: string) => (/[\/]team[\/]/.test(file) ? false : undefined),
     chunkSizeWarningLimit: 400,
   },
   preview: { port: 4173, strictPort: true },

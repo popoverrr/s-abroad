@@ -12,8 +12,8 @@
   },
 
   "managers": [
-    { "id": "ramil",   "nameKey": "managers.ramil",   "phone": "77075858747", "whatsapp": "77075858747", "initial": "R" },
-    { "id": "gainel",  "nameKey": "managers.gainel",  "phone": "77018009045", "whatsapp": "77018009045", "initial": "G" }
+    { "id": "ramil",   "nameKey": "managers.ramil",   "phone": "77075858747", "whatsapp": "77075858747", "initial": "R", "photo": "ramil" },
+    { "id": "gainel",  "nameKey": "managers.gainel",  "phone": "77018009045", "whatsapp": "77018009045", "initial": "G", "photo": "gainel" }
   ],
 
   "socials": [

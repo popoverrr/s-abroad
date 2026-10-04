@@ -95,7 +95,8 @@ for (const [lang, view] of [
   ['en', 'm390'],
 ]) {
   const t = i18n(lang).egg
-  const { ctx, page, errors } = await open(view, `lang=${lang}&egg=now`)
+  // nogl: with software WebGL the page drops to ~10 fps and the plane moves between measuring and clicking
+  const { ctx, page, errors } = await open(view, `lang=${lang}&egg=now&nogl`)
   await page.waitForSelector('.egg-plane--white', { timeout: 5000 })
   await page.waitForTimeout(1300)
   const box = await page.locator('.egg-plane--white').boundingBox()

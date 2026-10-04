@@ -1,5 +1,5 @@
-# S ABROAD — правка v6: звук всегда включён
+# S ABROAD — правка v7: фото менеджеров и кнопка «Create by»
 
 Распакуйте поверх папки проекта с заменой файлов → `claude` → **делай**.
 
-Архив заменяет `CLAUDE.md` и `content/gate.json`, добавляет `docs/09-sound-always-on-v6.md`. Код сайта не трогает.
+Архив заменяет `CLAUDE.md`, добавляет `docs/10-photos-credit-v7.md`, `docs/ref/` и `assets/team/` (фото). Код сайта не трогает.

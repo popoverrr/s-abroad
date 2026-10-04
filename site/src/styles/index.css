@@ -2004,6 +2004,159 @@ a.manager-phone:hover {
   }
 }
 
+/* ───────────── v7: manager photos + accent credit (docs/10) ───────────── */
+.avatar {
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+.avatar.has-photo {
+  border: 2px solid var(--ink);
+  box-shadow: 3px 4px 0 var(--ink); /* hard round shadow, no blur */
+}
+.avatar-initial {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+.avatar picture,
+.avatar img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.manager {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 68px;
+  gap: 12px;
+}
+.pick {
+  grid-template-columns: auto minmax(0, 1fr) 48px;
+}
+
+.footer .credit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 56px;
+  padding: 0 8px 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--lime);
+  box-shadow: 4px 5px 0 var(--lime);
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+}
+.credit-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.credit-text small {
+  font-family: var(--board-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-field-2);
+}
+.footer .credit-text b {
+  font-family: 'Onest Variable', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--lime);
+}
+.credit-arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--ink);
+  animation: creditNudge 8s ease-in-out infinite;
+}
+.credit-arrow svg {
+  transition: transform 0.15s;
+}
+@keyframes creditNudge {
+  0%,
+  95%,
+  100% {
+    transform: none;
+  }
+  97.5% {
+    transform: translate(3px, -3px);
+  }
+}
+.footer .credit:hover,
+.footer .credit:focus-visible {
+  background: var(--lime);
+  color: var(--ink);
+  border-color: transparent;
+  box-shadow: 4px 5px 0 var(--ink);
+}
+.footer .credit:hover .credit-text small,
+.footer .credit:hover .credit-text b,
+.footer .credit:focus-visible .credit-text small,
+.footer .credit:focus-visible .credit-text b {
+  color: var(--ink);
+}
+.footer .credit:hover .credit-arrow,
+.footer .credit:focus-visible .credit-arrow {
+  background: var(--ink);
+  color: var(--lime);
+}
+.footer .credit:hover .credit-arrow svg,
+.footer .credit:focus-visible .credit-arrow svg {
+  transform: translate(2px, -2px);
+}
+.footer .credit:active {
+  box-shadow: 0 0 0 var(--ink);
+  transform: translate(4px, 5px);
+}
+.footer .credit:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 4px;
+}
+@media (max-width: 767px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer .credit {
+    width: 100%;
+    max-width: 360px;
+    margin-top: 14px;
+  }
+}
+@media (min-width: 768px) {
+  .footer .credit {
+    height: 60px;
+  }
+  .footer .credit-text b {
+    font-size: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .credit-arrow {
+    animation: none;
+  }
+}
+
 /* ───────────── Reduced motion ───────────── */
 @media (prefers-reduced-motion: reduce) {
   *,

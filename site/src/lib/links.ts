@@ -8,6 +8,7 @@ export type ResolvedManager = {
   id: string
   name: string
   initial: string
+  photo?: string
   phoneLabel: string
   wa: { href: string; todo: boolean }
   tel: { href: string; todo: boolean } | null
@@ -29,7 +30,7 @@ export function managers(t: Dict, template: string = t.wa.default): ResolvedMana
         ? { href: '#todo', todo: true }
         : { href: `https://wa.me/${digits(waNum)}?text=${encodeURIComponent(fill(template, name))}`, todo: false }
       const tel = isEmpty(m.phone) ? null : isTodo(m.phone) ? { href: '#todo', todo: true } : { href: `tel:+${digits(m.phone)}`, todo: false }
-      return { id: m.id, name, initial: m.initial || name[0], phoneLabel: isTodo(m.phone) || isEmpty(m.phone) ? '' : formatPhone(m.phone), wa, tel }
+      return { id: m.id, name, initial: m.initial || name[0], photo: m.photo, phoneLabel: isTodo(m.phone) || isEmpty(m.phone) ? '' : formatPhone(m.phone), wa, tel }
     })
 }
 
